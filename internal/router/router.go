@@ -10,8 +10,8 @@ func RegisterRouter(router *gin.Engine) {
 
 	apiRouter := router.Group("/api")
 	{
-		apiRouter.GET("/auth/sign-in/twitch")
-		apiRouter.GET("/auth/callback/twitch")
-		apiRouter.GET("/auth/sign-out/twitch")
+		apiRouter.GET("/auth/sign-in/twitch", handler.SignInTwitch)
+		apiRouter.GET("/auth/callback/twitch", handler.CallbackTwitch)
+		apiRouter.GET("/auth/sign-out/twitch", handler.SignOutTwitch)
 	}
 }
