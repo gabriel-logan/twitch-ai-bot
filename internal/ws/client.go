@@ -119,7 +119,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 
 						const defaultMsg = "Don't create very long messages; messages should be short, with a maximum of 450 characters. You were created by Gabriel Logan, in case someone asks a related question. Always reply in the same language as the user who is speaking."
 
-						initialSystemPrompt = initialSystemPrompt + defaultMsg
+						initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
 
 						conversations[user] = []groq.Message{
 							{
