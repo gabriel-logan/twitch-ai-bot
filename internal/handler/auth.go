@@ -38,14 +38,7 @@ func SignInTwitch(ctx *gin.Context) {
 
 	req.URL.RawQuery = q.Encode()
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Printf("Error when trying to send request: %v \n", err)
-		ctx.JSON(http.StatusInternalServerError, "Error when trying to send request")
-		return
-	}
-
-	ctx.Redirect(http.StatusTemporaryRedirect, resp.Request.URL.String())
+	ctx.Redirect(http.StatusTemporaryRedirect, req.URL.String())
 }
 
 func SignOutTwitch(ctx *gin.Context) {
