@@ -66,6 +66,7 @@ All configuration is done via the `.env` file:
 | `GIN_MODE` | Gin server mode (`debug` or `release`) | `debug` |
 | `APP_NAME` | Application display name | `TwitchAIBot` |
 | `SERVER_PORT` | HTTP server port | `8080` |
+| `SERVER_TRUSTED_PROXIES` | List of trusted proxy addresses for the server | `localhost` |
 | `TWITCH_CLIENT_NAME` | Your Twitch app name | `my-twitch-bot` |
 | `TWITCH_CLIENT_ID` | Twitch OAuth Client ID | `abc123...` |
 | `TWITCH_CLIENT_SECRET` | Twitch OAuth Client Secret | `xyz789...` |
