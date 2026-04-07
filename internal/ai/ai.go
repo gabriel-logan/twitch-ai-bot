@@ -64,3 +64,8 @@ func CallGroq(messages []Message) (string, error) {
 
 	return content, nil
 }
+
+func CallGenericAI(messages []Message, url string) (string, error) {
+	// TODO: implement
+	return "", nil
+}
