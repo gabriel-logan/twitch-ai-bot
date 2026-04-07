@@ -37,8 +37,8 @@ type WSMessage struct {
 }
 
 var (
-	conversations = make(map[string][]ai.Message)
-	once          sync.Once
+	conversation = []ai.Message{}
+	once         sync.Once
 )
 
 func StartBot() {
@@ -107,7 +107,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 				if strings.Contains(msg, env.TwitchKeyWordToCallBot) {
 					user := data.Payload.Event.ChatterUserLogin
 
-					if _, exist := conversations[user]; !exist {
+					if len(conversation) == 0 {
 						systemTxt, err := helper.LoadFile("system_prompt.txt")
 						if err != nil {
 							log.Println("✖ Error loading system_prompt.txt:", err)
@@ -120,34 +120,32 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 
 						initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
 
-						conversations[user] = []ai.Message{
-							{
-								Role:    "system",
-								Content: initialSystemPrompt,
-							},
-						}
+						conversation = append(conversation, ai.Message{
+							Role:    "system",
+							Content: initialSystemPrompt,
+						})
 					}
 
-					conversations[user] = append(conversations[user], ai.Message{
+					conversation = append(conversation, ai.Message{
 						Role:    "user",
-						Content: msg,
+						Content: user + ": " + msg,
 					})
 
-					response, err := ai.CallGroq(conversations[user])
+					response, err := ai.CallGroq(conversation)
 					if err != nil {
 						log.Println("ai error:", err)
 						continue
 					}
 
-					conversations[user] = append(conversations[user], ai.Message{
+					conversation = append(conversation, ai.Message{
 						Role:    "assistant",
-						Content: response,
+						Content: "assistant: " + response,
 					})
 
 					maxMessages := env.GroqMaxContextInput
 
-					if len(conversations[user]) > maxMessages {
-						conversations[user] = append(conversations[user][:1], conversations[user][len(conversations[user])-maxMessages:]...)
+					if len(conversation) > maxMessages {
+						conversation = append(conversation[:1], conversation[len(conversation)-maxMessages:]...)
 					}
 
 					sendMessage(env, response)
