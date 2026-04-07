@@ -67,7 +67,6 @@ All configuration is done via the `.env` file:
 | `APP_NAME` | Application display name | `TwitchAIBot` |
 | `SERVER_PORT` | HTTP server port | `8080` |
 | `SERVER_TRUSTED_PROXIES` | List of trusted proxy addresses for the server | `10.0.0.0/8,172.16.0.0/12,172.12.2.1` |
-| `TWITCH_CLIENT_NAME` | Your Twitch app name | `my-twitch-bot` |
 | `TWITCH_CLIENT_ID` | Twitch OAuth Client ID | `abc123...` |
 | `TWITCH_CLIENT_SECRET` | Twitch OAuth Client Secret | `xyz789...` |
 | `TWITCH_CLIENT_REDIRECT_URI` | OAuth callback URL | `http://localhost:8080/api/auth/callback/twitch` |

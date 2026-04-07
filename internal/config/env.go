@@ -17,7 +17,6 @@ type Env struct {
 	AppName                 string
 	ServerPort              string
 	ServerTrustedProxies    []string
-	TwitchClientName        string
 	TwitchClientID          string
 	TwitchClientSecret      string
 	TwitchClientRedirectURI string
@@ -92,7 +91,6 @@ func InitEnv() *Env {
 		AppName:                 mustExistString("APP_NAME"),
 		ServerPort:              mustExistString("SERVER_PORT"),
 		ServerTrustedProxies:    mustExistStringSlice("SERVER_TRUSTED_PROXIES"),
-		TwitchClientName:        mustExistString("TWITCH_CLIENT_NAME"),
 		TwitchClientID:          mustExistString("TWITCH_CLIENT_ID"),
 		TwitchClientSecret:      mustExistString("TWITCH_CLIENT_SECRET"),
 		TwitchClientRedirectURI: mustExistString("TWITCH_CLIENT_REDIRECT_URI"),
