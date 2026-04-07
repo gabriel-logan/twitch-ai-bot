@@ -5,10 +5,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Twitch AI Bot</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #6441a5, #2a0845);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .login {
+            background-color: #6441a5;
+        }
+
+        .login:hover {
+            background-color: #7d5bbe;
+        }
+
+        .logout {
+            background-color: #e74c3c;
+        }
+
+        .logout:hover {
+            background-color: #ff6b5a;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>{{ .title }}</h1>
+    <div class="container">
+        <h1>{{ .title }}</h1>
+
+        {{ if .isLoggedIn }}
+        <p>You are logged in</p>
+        <a href="/api/auth/sign-out/twitch" class="btn logout">Logout</a>
+        {{ else }}
+        <p>You are not logged in</p>
+        <a href="/api/auth/sign-in/twitch" class="btn login">Login with Twitch</a>
+        {{ end }}
+    </div>
 </body>
 
 </html>
