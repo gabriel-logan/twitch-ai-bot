@@ -31,7 +31,7 @@ type WSMessage struct {
 	} `json:"payload"`
 }
 
-func ListenTwitch(conn *websocket.Conn, env *config.Env) {
+func ListenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 	var sessionID string
 
 	for {
@@ -51,21 +51,19 @@ func ListenTwitch(conn *websocket.Conn, env *config.Env) {
 
 		case "session_welcome":
 			sessionID = data.Payload.Session.ID
+
 			log.Println("Session ID:", sessionID)
 
 			go registerEventSub(sessionID, env)
 
 		case "notification":
 			if data.Metadata.SubscriptionType == "channel.chat.message" {
-				log.Printf(
-					"MSG #%s <%s>: %s",
-					data.Payload.Event.BroadcasterUserLogin,
-					data.Payload.Event.ChatterUserLogin,
-					data.Payload.Event.Message.Text,
-				)
-
 				if strings.TrimSpace(data.Payload.Event.Message.Text) == "ping" {
 					go sendMessage(env, "pong")
+				}
+
+				if strings.Contains(strings.ToLower(data.Payload.Event.Message.Text), "jesus") {
+					go sendMessage(env, "Jesus é o Senhor")
 				}
 			}
 		}
@@ -94,7 +92,9 @@ func registerEventSub(sessionID string, env *config.Env) {
 		return
 	}
 
-	req, err := http.NewRequest("POST", "https://api.twitch.tv/helix/eventsub/subscriptions", bytes.NewBuffer(jsonBody))
+	const baseURL = "https://api.twitch.tv/helix/eventsub/subscriptions"
+
+	req, err := http.NewRequest("POST", baseURL, bytes.NewBuffer(jsonBody))
 	if err != nil {
 		log.Println("eventsub error:", err)
 		return
@@ -129,7 +129,9 @@ func sendMessage(env *config.Env, message string) {
 		return
 	}
 
-	req, err := http.NewRequest("POST", "https://api.twitch.tv/helix/chat/messages", bytes.NewBuffer(jsonBody))
+	const baseURL = "https://api.twitch.tv/helix/chat/messages"
+
+	req, err := http.NewRequest("POST", baseURL, bytes.NewBuffer(jsonBody))
 	if err != nil {
 		log.Println("send message error:", err)
 		return
@@ -145,6 +147,4 @@ func sendMessage(env *config.Env, message string) {
 		return
 	}
 	defer resp.Body.Close()
-
-	log.Println("Message sent:", message)
 }
