@@ -139,7 +139,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 
 					conversation = append(conversation, ai.Message{
 						Role:    "assistant",
-						Content: "assistant: " + response,
+						Content: response,
 					})
 
 					maxMessages := env.GroqMaxContextInput
