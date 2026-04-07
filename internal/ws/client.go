@@ -3,6 +3,7 @@ package ws
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -148,7 +149,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 						conversations[user] = append(conversations[user][:1], conversations[user][len(conversations[user])-maxMessages:]...)
 					}
 
-					go sendMessage(env, response)
+					sendMessage(env, response)
 				}
 			}
 		}
@@ -232,4 +233,13 @@ func sendMessage(env *config.Env, message string) {
 		return
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+		log.Println("send message failed:", resp.Status)
+
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		log.Println("response body:", string(bodyBytes))
+
+		return
+	}
 }
