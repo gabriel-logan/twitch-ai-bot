@@ -3,16 +3,18 @@ package main
 import (
 	"log"
 
+	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/router"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// Initialize logger - uses log package internally
+	config.InitLogger()
+
+	// Load environment variables
+	env := config.InitEnv()
+	gin.SetMode(env.GinMode)
 
 	r := gin.Default()
 
@@ -20,10 +22,10 @@ func main() {
 
 	router.RegisterRouter(r)
 
-	serverPort := "8080"
-
-	log.Println("Server running at: http://localhost:" + serverPort)
-	if err := r.Run(":" + serverPort); err != nil {
+	log.Println("Server running at: http://localhost:" + env.ServerPort)
+	log.Println("Application name: " + env.AppName)
+	log.Printf("Running in %s mode \n", env.GinMode)
+	if err := r.Run(":" + env.ServerPort); err != nil {
 		log.Printf("Error when trying to start server: %v \n", err)
 	}
 }
