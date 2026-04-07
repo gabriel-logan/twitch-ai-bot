@@ -81,7 +81,7 @@ func CallbackTwitch(ctx *gin.Context) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		log.Printf("Error when trying to get access token: %v \n", resp.StatusCode)
+		log.Printf("Error when trying to get access token: %v \n", resp)
 		ctx.JSON(http.StatusInternalServerError, "Error when trying to get access token")
 		return
 	}
