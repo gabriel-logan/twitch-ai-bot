@@ -117,7 +117,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 
 						initialSystemPrompt := systemTxt
 
-						initialSystemPrompt = initialSystemPrompt + "You were created by Gabriel Logan; you're a bot designed to help people watching Say Seven's live streams on Twitch. Always respond in the same language as the user speaking."
+						initialSystemPrompt = initialSystemPrompt + "Do not create very long messages; messages should be short, with a maximum of 400 characters. You were created by Gabriel Logan; you're a bot designed to help people watching Say Seven's live streams on Twitch. Always respond in the same language as the user speaking."
 
 						conversations[user] = []groq.Message{
 							{
