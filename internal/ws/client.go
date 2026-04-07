@@ -39,7 +39,7 @@ func StartBot() {
 	once.Do(func() {
 		go func() {
 			for {
-				Run()
+				run()
 				log.Println("Reconnecting... (5 seconds)")
 				time.Sleep(5 * time.Second)
 			}
@@ -47,7 +47,7 @@ func StartBot() {
 	})
 }
 
-func Run() {
+func run() {
 	const twitchWS = "wss://eventsub.wss.twitch.tv/ws"
 
 	conn, response, err := websocket.DefaultDialer.Dial(twitchWS, nil)
@@ -58,10 +58,10 @@ func Run() {
 	}
 	defer conn.Close()
 
-	ListenTwitch(conn, config.GetEnv())
+	listenTwitch(conn, config.GetEnv())
 }
 
-func ListenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
+func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 	var sessionID string
 
 	for {
@@ -88,12 +88,18 @@ func ListenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 
 		case "notification":
 			if data.Metadata.SubscriptionType == "channel.chat.message" {
-				if strings.TrimSpace(data.Payload.Event.Message.Text) == "ping" {
+				if data.Payload.Event.ChatterUserLogin == env.TwitchBotUserName {
+					continue
+				}
+
+				msg := strings.ToLower(strings.TrimSpace(data.Payload.Event.Message.Text))
+
+				if msg == "ping" {
 					go sendMessage(env, "pong")
 				}
 
-				if strings.Contains(strings.ToLower(data.Payload.Event.Message.Text), "jesus") {
-					go sendMessage(env, "Jesus é o Senhor")
+				if strings.Contains(msg, "jesus") {
+					go sendMessage(env, "Jesus é o Senhor")
 				}
 			}
 		}
