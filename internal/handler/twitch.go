@@ -8,6 +8,7 @@ import (
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
+	"github.com/gabriel-logan/twitch-ai-bot/internal/ws"
 	"github.com/gin-gonic/gin"
 )
 
@@ -72,4 +73,10 @@ func GetTwitchUserInfo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, marshaledBody)
+}
+
+func StartTwitchBot(c *gin.Context) {
+	ws.StartBot()
+
+	c.JSON(http.StatusOK, "Bot started")
 }

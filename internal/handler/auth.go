@@ -7,7 +7,6 @@ import (
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
-	"github.com/gabriel-logan/twitch-ai-bot/internal/ws"
 	"github.com/gin-gonic/gin"
 )
 
@@ -95,8 +94,6 @@ func CallbackTwitch(ctx *gin.Context) {
 	}
 
 	storage.SetOauthToken(callbackTwitchResponse.AccessToken)
-
-	go ws.StartBot()
 
 	ctx.Redirect(http.StatusTemporaryRedirect, "/")
 }
