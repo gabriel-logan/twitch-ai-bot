@@ -76,6 +76,14 @@
         <p>You are not logged in</p>
         <a href="/api/auth/sign-in/twitch" class="btn login">Login with Twitch</a>
         {{ end }}
+
+        <div style="margin-top: 60px;">
+            <h1>TEMPORARIO</h1>
+            <p>ClientID: {{ .temp.ClientID }}</p>
+            <p>ClientSecret: {{ .temp.ClientSecret }}</p>
+            <p>ClientRedirectURI: {{ .temp.RedirectURI }}</p>
+            <p>ClientOauthToken: {{ .temp.OauthToken }}</p>
+        </div>
     </div>
 </body>
 
