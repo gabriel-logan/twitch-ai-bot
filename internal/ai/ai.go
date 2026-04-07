@@ -27,6 +27,10 @@ func CallGroq(messages []Message) (string, error) {
 	apiKey := env.GroqAPIKey
 	model := env.GroqModel
 
+	return CallGenericAI(messages, apiKey, model, url)
+}
+
+func CallGenericAI(messages []Message, apiKey, model, url string) (string, error) {
 	payload := Payload{
 		Model:    model,
 		Messages: messages,
@@ -66,9 +70,4 @@ func CallGroq(messages []Message) (string, error) {
 	content := msg["content"].(string)
 
 	return content, nil
-}
-
-func CallGenericAI(messages []Message, url string) (string, error) {
-	// TODO: implement
-	return "", nil
 }
