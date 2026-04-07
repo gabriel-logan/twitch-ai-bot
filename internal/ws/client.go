@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gabriel-logan/twitch-ai-bot/internal/ai"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
-	"github.com/gabriel-logan/twitch-ai-bot/internal/groq"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/helper"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
 	"github.com/gorilla/websocket"
@@ -37,7 +37,7 @@ type WSMessage struct {
 }
 
 var (
-	conversations = make(map[string][]groq.Message)
+	conversations = make(map[string][]ai.Message)
 	once          sync.Once
 )
 
@@ -111,7 +111,6 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 						systemTxt, err := helper.LoadFile("system_prompt.txt")
 						if err != nil {
 							log.Println("✖ Error loading system_prompt.txt:", err)
-							log.Println("⚠ Even if you don't want custom settings, create a system_prompt.txt file at the same level as the groq executable. It can be empty, but it needs to exist. This is required for the program to run.")
 							return
 						}
 
@@ -121,7 +120,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 
 						initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
 
-						conversations[user] = []groq.Message{
+						conversations[user] = []ai.Message{
 							{
 								Role:    "system",
 								Content: initialSystemPrompt,
@@ -129,18 +128,18 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 						}
 					}
 
-					conversations[user] = append(conversations[user], groq.Message{
+					conversations[user] = append(conversations[user], ai.Message{
 						Role:    "user",
 						Content: msg,
 					})
 
-					response, err := groq.CallGroq(conversations[user])
+					response, err := ai.CallGroq(conversations[user])
 					if err != nil {
-						log.Println("groq error:", err)
+						log.Println("ai error:", err)
 						continue
 					}
 
-					conversations[user] = append(conversations[user], groq.Message{
+					conversations[user] = append(conversations[user], ai.Message{
 						Role:    "assistant",
 						Content: response,
 					})

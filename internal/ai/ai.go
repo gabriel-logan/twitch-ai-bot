@@ -1,4 +1,4 @@
-package groq
+package ai
 
 import (
 	"bytes"
