@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
+	"github.com/gabriel-logan/twitch-ai-bot/internal/groq"
+	"github.com/gabriel-logan/twitch-ai-bot/internal/helper"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
 	"github.com/gorilla/websocket"
 )
@@ -33,7 +35,10 @@ type WSMessage struct {
 	} `json:"payload"`
 }
 
-var once sync.Once
+var (
+	conversations = make(map[string][]groq.Message)
+	once          sync.Once
+)
 
 func StartBot() {
 	once.Do(func() {
@@ -98,8 +103,52 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 					go sendMessage(env, "pong")
 				}
 
-				if strings.Contains(msg, "jesus") {
-					go sendMessage(env, "Jesus é o Senhor")
+				if strings.Contains(msg, env.TwitchKeyWordToCallBot) {
+					user := data.Payload.Event.ChatterUserLogin
+
+					if _, exist := conversations[user]; !exist {
+						systemTxt, err := helper.LoadFile("system.txt")
+						if err != nil {
+							log.Println("✖ Error loading system.txt:", err)
+							log.Println("⚠ Even if you don't want custom settings, create a system.txt file at the same level as the groq executable. It can be empty, but it needs to exist. This is required for the program to run.")
+							return
+						}
+
+						initialSystemPrompt := systemTxt
+
+						initialSystemPrompt = initialSystemPrompt + "You were created by Gabriel Logan; you're a bot designed to help people watching Say Seven's live streams on Twitch. Always respond in the same language as the user speaking."
+
+						conversations[user] = []groq.Message{
+							{
+								Role:    "system",
+								Content: initialSystemPrompt,
+							},
+						}
+					}
+
+					conversations[user] = append(conversations[user], groq.Message{
+						Role:    "user",
+						Content: msg,
+					})
+
+					response, err := groq.CallGroq(conversations[user])
+					if err != nil {
+						log.Println("groq error:", err)
+						continue
+					}
+
+					conversations[user] = append(conversations[user], groq.Message{
+						Role:    "assistant",
+						Content: response,
+					})
+
+					maxMessages := env.GroqMaxContextInput
+
+					if len(conversations[user]) > maxMessages {
+						conversations[user] = append(conversations[user][:1], conversations[user][len(conversations[user])-maxMessages:]...)
+					}
+
+					go sendMessage(env, response)
 				}
 			}
 		}

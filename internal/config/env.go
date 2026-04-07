@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -21,6 +22,10 @@ type Env struct {
 	TwitchBroadcasterID     string
 	TwitchBotUserID         string
 	TwitchBotUserName       string
+	TwitchKeyWordToCallBot  string
+	GroqAPIKey              string
+	GroqModel               string
+	GroqMaxContextInput     int
 }
 
 var env *Env
@@ -49,6 +54,21 @@ func mustExistString(key string) string {
 	return value
 }
 
+func mustExistInt(key string) int {
+	value := os.Getenv(key)
+
+	if value == "" {
+		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+	}
+
+	intValue, err := strconv.Atoi(value)
+	if err != nil {
+		log.Fatalf(EnvironmentPrefixMsg+key+" must be a valid integer: %v", err)
+	}
+
+	return intValue
+}
+
 func InitEnv() *Env {
 	err := godotenv.Load()
 	if err != nil {
@@ -66,6 +86,10 @@ func InitEnv() *Env {
 		TwitchBroadcasterID:     mustExistString("TWITCH_BROADCASTER_ID"),
 		TwitchBotUserID:         mustExistString("TWITCH_BOT_USER_ID"),
 		TwitchBotUserName:       mustExistString("TWITCH_BOT_USER_NAME"),
+		TwitchKeyWordToCallBot:  mustExistString("TWITCH_KEY_WORD_TO_CALL_BOT"),
+		GroqAPIKey:              mustExistString("GROQ_API_KEY"),
+		GroqModel:               mustExistString("GROQ_MODEL"),
+		GroqMaxContextInput:     mustExistInt("GROQ_MAX_CONTEXT_INPUT"),
 	}
 
 	log.Println("Environment variables initialized successfully")
@@ -90,21 +114,6 @@ func mustExistBool(key string) bool {
 	}
 
 	return value == "true"
-}
-
-func mustExistInt(key string) int {
-	value := os.Getenv(key)
-
-	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
-	}
-
-	intValue, err := strconv.Atoi(value)
-	if err != nil {
-		log.Fatalf(EnvironmentPrefixMsg+key+" must be a valid integer: %v", err)
-	}
-
-	return intValue
 }
 
 func mustExistStringSlice(key string) []string {
