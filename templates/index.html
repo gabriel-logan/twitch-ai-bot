@@ -7,12 +7,16 @@
     <title>Twitch AI Bot</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
             font-family: Arial, Helvetica, sans-serif;
             background: linear-gradient(135deg, #6441a5, #2a0845);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -20,11 +24,12 @@
 
         .container {
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 12px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            width: 300px;
+            width: 100%;
+            max-width: 400px;
         }
 
         h1 {
@@ -39,12 +44,13 @@
 
         .btn {
             display: inline-block;
-            padding: 12px 20px;
+            padding: 12px;
             border-radius: 8px;
             text-decoration: none;
             color: white;
             font-weight: bold;
             transition: 0.2s;
+            width: 100%;
         }
 
         .login {
@@ -62,6 +68,63 @@
         .logout:hover {
             background-color: #ff6b5a;
         }
+
+        .search-box {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .button {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: #6441a5;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .button:hover {
+            background: #7d5bbe;
+        }
+
+        .result {
+            margin-top: 15px;
+            text-align: left;
+            background: #f4f4f4;
+            padding: 12px;
+            border-radius: 6px;
+
+            max-height: 200px;
+            overflow: auto;
+
+            word-wrap: break-word;
+            white-space: pre-wrap;
+
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            .result {
+                max-height: 150px;
+                font-size: 11px;
+            }
+        }
     </style>
 </head>
 
@@ -72,18 +135,50 @@
         {{ if .isLoggedIn }}
         <p>You are logged in</p>
         <a href="/api/auth/sign-out/twitch" class="btn logout">Logout</a>
+
+        <div class="search-box">
+            <input type="text" id="loginInput" class="input" placeholder="Enter Twitch login (e.g. say_seven)" />
+
+            <button onclick="fetchUser()" class="button">
+                Fetch User Info
+            </button>
+
+            <pre id="result" class="result"></pre>
+        </div>
+
+        <script>
+            async function fetchUser() {
+                const login = document.getElementById("loginInput").value.trim()
+
+                if (!login) {
+                    alert("Please enter a login")
+                    return
+                }
+
+                try {
+                    const res = await fetch(`/api/twitch/user-info?login=${login}`)
+                    const data = await res.json()
+
+                    document.getElementById("result").textContent =
+                        JSON.stringify(data, null, 2)
+                } catch (err) {
+                    console.error(err)
+                    document.getElementById("result").textContent =
+                        "Failed to fetch user"
+                }
+            }
+
+            document.getElementById("loginInput").addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    fetchUser()
+                }
+            })
+        </script>
+
         {{ else }}
         <p>You are not logged in</p>
         <a href="/api/auth/sign-in/twitch" class="btn login">Login with Twitch</a>
         {{ end }}
-
-        <div style="margin-top: 60px;">
-            <h1>TEMPORARIO</h1>
-            <p>ClientID: {{ .temp.ClientID }}</p>
-            <p>ClientSecret: {{ .temp.ClientSecret }}</p>
-            <p>ClientRedirectURI: {{ .temp.RedirectURI }}</p>
-            <p>ClientOauthToken: {{ .temp.OauthToken }}</p>
-        </div>
     </div>
 </body>
 

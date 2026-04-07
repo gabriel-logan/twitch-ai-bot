@@ -8,13 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Temporario struct {
-	ClientID     string
-	ClientSecret string
-	RedirectURI  string
-	OauthToken   string
-}
-
 func Index(ctx *gin.Context) {
 	env := config.GetEnv()
 
@@ -26,11 +19,5 @@ func Index(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "index.html", gin.H{
 		"title":      env.AppName,
 		"isLoggedIn": IsLoggedIn,
-		"temp": Temporario{
-			ClientID:     env.TwitchClientID,
-			ClientSecret: env.TwitchClientSecret,
-			RedirectURI:  env.TwitchClientRedirectURI,
-			OauthToken:   storage.GetOauthToken(),
-		},
 	})
 }

@@ -18,6 +18,8 @@ type Env struct {
 	TwitchClientID          string
 	TwitchClientSecret      string
 	TwitchClientRedirectURI string
+	TwitchBroadcasterID     string
+	TwitchBotUserID         string
 }
 
 var env *Env
@@ -60,6 +62,8 @@ func InitEnv() *Env {
 		TwitchClientID:          mustExistString("TWITCH_CLIENT_ID"),
 		TwitchClientSecret:      mustExistString("TWITCH_CLIENT_SECRET"),
 		TwitchClientRedirectURI: mustExistString("TWITCH_CLIENT_REDIRECT_URI"),
+		TwitchBroadcasterID:     mustExistString("TWITCH_BROADCASTER_ID"),
+		TwitchBotUserID:         mustExistString("TWITCH_BOT_USER_ID"),
 	}
 
 	log.Println("Environment variables initialized successfully")

@@ -7,7 +7,9 @@ import (
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
+	"github.com/gabriel-logan/twitch-ai-bot/internal/ws"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 )
 
 type CallbackTwitchResponse struct {
@@ -94,6 +96,18 @@ func CallbackTwitch(ctx *gin.Context) {
 	}
 
 	storage.SetOauthToken(callbackTwitchResponse.AccessToken)
+
+	const twitchWS = "wss://eventsub.wss.twitch.tv/ws"
+
+	conn, response, err := websocket.DefaultDialer.Dial(twitchWS, nil)
+	if err != nil {
+		log.Printf("Error when trying to connect to %s: %v \n", twitchWS, err)
+		log.Printf("Response: %v \n", response)
+		return
+	}
+	// defer conn.Close()
+
+	go ws.ListenTwitch(conn, config.GetEnv())
 
 	ctx.Redirect(http.StatusTemporaryRedirect, "/")
 }

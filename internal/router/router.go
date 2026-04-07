@@ -13,5 +13,7 @@ func RegisterRouter(router *gin.Engine) {
 		apiRouter.GET("/auth/sign-in/twitch", handler.SignInTwitch)
 		apiRouter.GET("/auth/callback/twitch", handler.CallbackTwitch)
 		apiRouter.GET("/auth/sign-out/twitch", handler.SignOutTwitch)
+
+		apiRouter.GET("/twitch/user-info", handler.GetTwitchUserInfo)
 	}
 }
