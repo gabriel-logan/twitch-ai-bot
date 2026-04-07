@@ -101,17 +101,17 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 				msg := strings.ToLower(strings.TrimSpace(data.Payload.Event.Message.Text))
 
 				if msg == "ping" {
-					go sendMessage(env, "pong")
+					sendMessage(env, "pong")
 				}
 
 				if strings.Contains(msg, env.TwitchKeyWordToCallBot) {
 					user := data.Payload.Event.ChatterUserLogin
 
 					if _, exist := conversations[user]; !exist {
-						systemTxt, err := helper.LoadFile("system.txt")
+						systemTxt, err := helper.LoadFile("system_prompt.txt")
 						if err != nil {
-							log.Println("✖ Error loading system.txt:", err)
-							log.Println("⚠ Even if you don't want custom settings, create a system.txt file at the same level as the groq executable. It can be empty, but it needs to exist. This is required for the program to run.")
+							log.Println("✖ Error loading system_prompt.txt:", err)
+							log.Println("⚠ Even if you don't want custom settings, create a system_prompt.txt file at the same level as the groq executable. It can be empty, but it needs to exist. This is required for the program to run.")
 							return
 						}
 
