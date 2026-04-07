@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -15,6 +16,7 @@ type Env struct {
 	GinMode                 string
 	AppName                 string
 	ServerPort              string
+	ServerTrustedProxies    []string
 	TwitchClientName        string
 	TwitchClientID          string
 	TwitchClientSecret      string
@@ -69,6 +71,16 @@ func mustExistInt(key string) int {
 	return intValue
 }
 
+func mustExistStringSlice(key string) []string {
+	value := os.Getenv(key)
+
+	if value == "" {
+		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+	}
+
+	return strings.Split(value, ",")
+}
+
 func InitEnv() *Env {
 	err := godotenv.Load()
 	if err != nil {
@@ -79,6 +91,7 @@ func InitEnv() *Env {
 		GinMode:                 mustExistGoEnv("GIN_MODE"),
 		AppName:                 mustExistString("APP_NAME"),
 		ServerPort:              mustExistString("SERVER_PORT"),
+		ServerTrustedProxies:    mustExistStringSlice("SERVER_TRUSTED_PROXIES"),
 		TwitchClientName:        mustExistString("TWITCH_CLIENT_NAME"),
 		TwitchClientID:          mustExistString("TWITCH_CLIENT_ID"),
 		TwitchClientSecret:      mustExistString("TWITCH_CLIENT_SECRET"),
@@ -114,16 +127,6 @@ func mustExistBool(key string) bool {
 	}
 
 	return value == "true"
-}
-
-func mustExistStringSlice(key string) []string {
-	value := os.Getenv(key)
-
-	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
-	}
-
-	return strings.Split(value, ",")
 }
 
 func mustExistDuration(key string) time.Duration {

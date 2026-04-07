@@ -18,6 +18,8 @@ func main() {
 
 	r := gin.Default()
 
+	r.SetTrustedProxies(env.ServerTrustedProxies)
+
 	r.LoadHTMLGlob("templates/*")
 
 	router.RegisterRouter(r)
