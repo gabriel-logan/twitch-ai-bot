@@ -11,9 +11,13 @@ const EnvironmentPrefixMsg = "Environment variable "
 const EnvironmentSuffixMsg = " is required."
 
 type Env struct {
-	GinMode    string
-	AppName    string
-	ServerPort string
+	GinMode                 string
+	AppName                 string
+	ServerPort              string
+	TwitchClientName        string
+	TwitchClientID          string
+	TwitchClientSecret      string
+	TwitchClientRedirectURI string
 }
 
 var env *Env
@@ -49,9 +53,13 @@ func InitEnv() *Env {
 	}
 
 	env = &Env{
-		GinMode:    mustExistGoEnv("GIN_MODE"),
-		AppName:    mustExistString("APP_NAME"),
-		ServerPort: mustExistString("SERVER_PORT"),
+		GinMode:                 mustExistGoEnv("GIN_MODE"),
+		AppName:                 mustExistString("APP_NAME"),
+		ServerPort:              mustExistString("SERVER_PORT"),
+		TwitchClientName:        mustExistString("TWITCH_CLIENT_NAME"),
+		TwitchClientID:          mustExistString("TWITCH_CLIENT_ID"),
+		TwitchClientSecret:      mustExistString("TWITCH_CLIENT_SECRET"),
+		TwitchClientRedirectURI: mustExistString("TWITCH_CLIENT_REDIRECT_URI"),
 	}
 
 	log.Println("Environment variables initialized successfully")
