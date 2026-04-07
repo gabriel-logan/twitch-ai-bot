@@ -238,7 +238,12 @@ func sendMessage(env *config.Env, message string) {
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
 		log.Println("send message failed:", resp.Status)
 
-		bodyBytes, _ := io.ReadAll(resp.Body)
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Println("error reading response body:", err)
+			return
+		}
+
 		log.Println("response body:", string(bodyBytes))
 
 		return

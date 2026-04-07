@@ -52,7 +52,10 @@ func CallGroq(messages []Message) (string, error) {
 	defer resp.Body.Close()
 
 	var result map[string]interface{}
-	json.NewDecoder(resp.Body).Decode(&result)
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		return "", err
+	}
 
 	choices, ok := result["choices"].([]interface{})
 	if !ok || len(choices) == 0 {
