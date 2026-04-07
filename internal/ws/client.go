@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
@@ -29,6 +31,34 @@ type WSMessage struct {
 			} `json:"message"`
 		} `json:"event"`
 	} `json:"payload"`
+}
+
+var once sync.Once
+
+func StartBot() {
+	once.Do(func() {
+		go func() {
+			for {
+				Run()
+				log.Println("Reconnecting... (5 seconds)")
+				time.Sleep(5 * time.Second)
+			}
+		}()
+	})
+}
+
+func Run() {
+	const twitchWS = "wss://eventsub.wss.twitch.tv/ws"
+
+	conn, response, err := websocket.DefaultDialer.Dial(twitchWS, nil)
+	if err != nil {
+		log.Printf("Error when trying to connect to %s: %v \n", twitchWS, err)
+		log.Printf("Response: %v \n", response)
+		return
+	}
+	defer conn.Close()
+
+	ListenTwitch(conn, config.GetEnv())
 }
 
 func ListenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
