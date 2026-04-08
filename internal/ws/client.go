@@ -196,6 +196,14 @@ func registerEventSub(sessionID string, env *config.Env) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+		log.Println("eventsub error:", resp.Status)
+		log.Println("eventsub response:", resp)
+		return
+	}
+
+	storage.SetBotIsOn(true)
+
 	log.Println("EventSub status:", resp.Status)
 }
 
