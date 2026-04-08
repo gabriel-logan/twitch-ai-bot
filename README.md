@@ -8,7 +8,7 @@ A Twitch chatbot powered by AI that listens to your channel's chat and responds 
 - **AI-Powered Responses**: Generates intelligent, context-aware responses in chat
 - **Twitch EventSub Integration**: Uses Twitch's WebSocket EventSub for real-time chat monitoring
 - **OAuth2 Authentication**: Secure Twitch login flow with proper scopes (`user:read:chat`, `user:write:chat`, `user:bot`, `channel:bot`)
-- **Conversation Context**: Maintains per-user conversation history for contextual multi-turn interactions
+- **Conversation Context**: Maintains a history of the entire conversation context, with a limit defined by the user in the environment variable
 - **Web Dashboard**: Simple UI for authentication management and Twitch user info lookup
 - **Auto-Reconnection**: Automatically reconnects to Twitch WebSocket on disconnection
 - **Custom System Prompt**: Configurable system prompt via `system_prompt.txt`
@@ -76,7 +76,7 @@ All configuration is done via the `.env` file:
 | `TWITCH_KEY_WORD_TO_CALL_BOT` | Keyword that triggers the bot | `jesus` |
 | `GROQ_API_KEY` | Groq API key | `gsk_...` |
 | `GROQ_MODEL` | Groq model to use (default provider) | `llama-3.3-70b-versatile` |
-| `GROQ_MAX_CONTEXT_INPUT` | Max messages kept in conversation context | `10` |
+| `GROQ_MAX_CONTEXT_INPUT` | Max messages kept in conversation context | `25` |
 
 ### Setting Up Twitch OAuth
 
