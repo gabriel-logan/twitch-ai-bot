@@ -26,8 +26,11 @@ build_darwin:
 
 build: build_linux build_windows build_darwin
 	
-clean: rm -rf bin
+clean:
+	rm -rf bin
 
-test: go test ./...
+test:
+	go test ./...
 
-test_race: go test -race ./...
+test_race: 
+	go test -race ./...
