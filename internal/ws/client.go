@@ -196,7 +196,7 @@ func registerEventSub(sessionID string, env *config.Env) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+	if resp.StatusCode != http.StatusAccepted {
 		log.Println("eventsub error:", resp.Status)
 		log.Println("eventsub response:", resp)
 		return
