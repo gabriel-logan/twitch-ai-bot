@@ -306,7 +306,11 @@
         <p>You are logged in</p>
         <a href="/api/auth/sign-out/twitch" class="btn logout">Logout</a>
 
-        <button onclick="startBot()" class="btn active_bot">Start Bot</button>
+        {{ if .isBotOn }}
+        <button onclick="stopBot()" class="btn active_bot">Stop Bot</button>
+        {{ else }}
+        <button onclick="startBot()" class="btn btn-start">Start Bot</button>
+        {{ end }}
 
         <div class="search-box">
             <input type="text" id="loginInput" class="input" placeholder="Enter Twitch login (e.g. say_seven)" />
@@ -325,6 +329,19 @@
 
                     if (response.ok) {
                         alert("Bot started")
+                    }
+
+                } catch (err) {
+                    console.error(err)
+                }
+            }
+
+            async function stopBot() {
+                try {
+                    const response = await fetch("/api/twitch/stop-bot", { method: "POST" })
+
+                    if (response.ok) {
+                        alert("Bot stopped")
                     }
 
                 } catch (err) {
