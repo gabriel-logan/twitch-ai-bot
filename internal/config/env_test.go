@@ -32,7 +32,7 @@ func ensureInternalDotEnvFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to getwd: %v", err)
 	}
-	path := filepath.Clean(filepath.Join(wd, "..", ".env"))
+	path := filepath.Clean(filepath.Join(wd, ".env"))
 
 	if _, err := os.Stat(path); err == nil {
 		return
@@ -397,7 +397,7 @@ func TestInitEnvMissingDotEnv(t *testing.T) {
 		t.Fatalf("failed to getwd: %v", err)
 	}
 
-	dotEnvPath := filepath.Clean(filepath.Join(wd, "..", ".env"))
+	dotEnvPath := filepath.Clean(filepath.Join(wd, ".env"))
 	backupPath := dotEnvPath + ".bak-test"
 
 	hadDotEnv := false
@@ -420,7 +420,7 @@ func TestInitEnvMissingDotEnv(t *testing.T) {
 	if runErr == nil {
 		t.Fatalf("expected InitEnv to fail without .env; output=%q", out)
 	}
-	if !strings.Contains(out, "Environment variable GIN_MODE is required") {
+	if !strings.Contains(out, "Error loading .env file") {
 		t.Fatalf("expected missing env var message; output=%q", out)
 	}
 }

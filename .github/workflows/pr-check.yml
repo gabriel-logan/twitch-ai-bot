@@ -28,9 +28,6 @@ jobs:
     - name: Install dependencies
       run: go mod tidy
 
-    - name: Create .env based on .env.example
-      run: cp .env.example .env
-
     - name: Build
       run: go build -v ./...
 
