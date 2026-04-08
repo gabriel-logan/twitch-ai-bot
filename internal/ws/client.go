@@ -134,6 +134,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 					response, err := ai.CallGroq(conversation)
 					if err != nil {
 						log.Println("ai error:", err)
+						sendMessage(env, "Something went wrong!!!")
 						continue
 					}
 
