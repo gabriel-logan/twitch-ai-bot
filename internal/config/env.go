@@ -33,6 +33,16 @@ type Env struct {
 
 var env *Env
 
+func mustExistBool(key string) bool {
+	value := os.Getenv(key)
+
+	if value == "" {
+		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+	}
+
+	return value == "true"
+}
+
 func mustExistGoEnv(key string) string {
 	value := os.Getenv(key)
 
@@ -133,15 +143,3 @@ func GetEnv() *Env {
 
 	return env
 }
-
-/**
-func mustExistBool(key string) bool {
-	value := os.Getenv(key)
-
-	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
-	}
-
-	return value == "true"
-}
-*/
