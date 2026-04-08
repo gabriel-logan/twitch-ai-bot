@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Index(ctx *gin.Context) {
+func Index(c *gin.Context) {
 	env := config.GetEnv()
 
 	var IsLoggedIn bool
@@ -16,7 +16,7 @@ func Index(ctx *gin.Context) {
 		IsLoggedIn = true
 	}
 
-	ctx.HTML(http.StatusOK, "index.html", gin.H{
+	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title":      env.AppName,
 		"isLoggedIn": IsLoggedIn,
 	})

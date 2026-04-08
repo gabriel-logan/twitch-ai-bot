@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"log"
@@ -28,9 +29,14 @@ type UserInfo struct {
 }
 
 func GetTwitchUserInfo(c *gin.Context) {
+	env := config.GetEnv()
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), env.ContextRequestDuration)
+	defer cancel()
+
 	const baseURL = "https://api.twitch.tv/helix/users"
 
-	req, err := http.NewRequest(http.MethodGet, baseURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, baseURL, nil)
 	if err != nil {
 		log.Printf("Error when trying to create request: %v \n", err)
 		c.JSON(http.StatusInternalServerError, "Error when trying to create request")
@@ -42,7 +48,7 @@ func GetTwitchUserInfo(c *gin.Context) {
 
 	req.URL.RawQuery = q.Encode()
 
-	req.Header.Set("Client-Id", config.GetEnv().TwitchClientID)
+	req.Header.Set("Client-Id", env.TwitchClientID)
 	req.Header.Set("Authorization", "Bearer "+storage.GetOauthToken())
 
 	resp, err := http.DefaultClient.Do(req)

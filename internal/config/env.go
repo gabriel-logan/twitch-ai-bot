@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -27,6 +28,7 @@ type Env struct {
 	GroqAPIKey              string
 	GroqModel               string
 	GroqMaxContextInput     int
+	ContextRequestDuration  time.Duration
 }
 
 var env *Env
@@ -80,6 +82,21 @@ func mustExistStringSlice(key string) []string {
 	return strings.Split(value, ",")
 }
 
+func mustExistDuration(key string) time.Duration {
+	value := os.Getenv(key)
+
+	if value == "" {
+		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+	}
+
+	duration, err := time.ParseDuration(value)
+	if err != nil {
+		log.Fatalf(EnvironmentPrefixMsg+key+" must be a valid duration: %v", err)
+	}
+
+	return duration
+}
+
 func InitEnv() *Env {
 	err := godotenv.Load()
 	if err != nil {
@@ -101,6 +118,7 @@ func InitEnv() *Env {
 		GroqAPIKey:              mustExistString("GROQ_API_KEY"),
 		GroqModel:               mustExistString("GROQ_MODEL"),
 		GroqMaxContextInput:     mustExistInt("GROQ_MAX_CONTEXT_INPUT"),
+		ContextRequestDuration:  mustExistDuration("CONTEXT_REQUEST_DURATION"),
 	}
 
 	log.Println("Environment variables initialized successfully")
@@ -125,20 +143,5 @@ func mustExistBool(key string) bool {
 	}
 
 	return value == "true"
-}
-
-func mustExistDuration(key string) time.Duration {
-	value := os.Getenv(key)
-
-	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
-	}
-
-	duration, err := time.ParseDuration(value)
-	if err != nil {
-		log.Fatalf(EnvironmentPrefixMsg+key+" must be a valid duration: %v", err)
-	}
-
-	return duration
 }
 */

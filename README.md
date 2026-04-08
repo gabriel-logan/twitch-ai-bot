@@ -77,6 +77,7 @@ All configuration is done via the `.env` file:
 | `GROQ_API_KEY` | Groq API key | `gsk_...` |
 | `GROQ_MODEL` | Groq model to use (default provider) | `llama-3.3-70b-versatile` |
 | `GROQ_MAX_CONTEXT_INPUT` | Max messages kept in conversation context | `25` |
+| `CONTEXT_REQUEST_DURATION` | Maximum request timeout | `15s` |
 
 ### Setting Up Twitch OAuth
 
