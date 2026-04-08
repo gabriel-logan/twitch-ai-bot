@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-  build:
+  pr-check:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
@@ -27,6 +27,9 @@ jobs:
 
     - name: Install dependencies
       run: go mod tidy
+
+    - name: Create .env based on .env.example
+      run: cp .env.example .env
 
     - name: Build
       run: go build -v ./...
