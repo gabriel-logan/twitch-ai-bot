@@ -12,12 +12,15 @@ func Index(c *gin.Context) {
 	env := config.GetEnv()
 
 	var IsLoggedIn bool
-	if storage.OauthToken != "" {
+	if storage.GetOauthToken() != "" {
 		IsLoggedIn = true
 	}
+
+	isBotOn := storage.GetBotIsOn()
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title":      env.AppName,
 		"isLoggedIn": IsLoggedIn,
+		"isBotOn":    isBotOn,
 	})
 }

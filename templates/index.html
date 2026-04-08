@@ -328,7 +328,13 @@
                     const response = await fetch("/api/twitch/start-bot", { method: "POST" })
 
                     if (response.ok) {
-                        alert("Bot started")
+                        const data = await response.json()
+
+                        alert(data)
+
+                        setTimeout(() => {
+                            location.reload()
+                        }, 2500)
                     }
 
                 } catch (err) {
@@ -337,16 +343,7 @@
             }
 
             async function stopBot() {
-                try {
-                    const response = await fetch("/api/twitch/stop-bot", { method: "POST" })
-
-                    if (response.ok) {
-                        alert("Bot stopped")
-                    }
-
-                } catch (err) {
-                    console.error(err)
-                }
+                alert("Not implemented yet, to stop the bot, you need to stop the server")
             }
 
             async function fetchUser() {

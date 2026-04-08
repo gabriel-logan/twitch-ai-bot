@@ -82,6 +82,13 @@ func GetTwitchUserInfo(c *gin.Context) {
 }
 
 func StartTwitchBot(c *gin.Context) {
+	isBotOn := storage.GetBotIsOn()
+
+	if isBotOn {
+		c.JSON(http.StatusOK, "Bot already started")
+		return
+	}
+
 	ws.StartBot()
 
 	c.JSON(http.StatusOK, "Bot started")
