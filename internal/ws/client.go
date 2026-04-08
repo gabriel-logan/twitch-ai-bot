@@ -116,7 +116,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 
 						initialSystemPrompt := systemTxt
 
-						const defaultMsg = "Don't create very long messages; messages should be short, with a maximum of 450 characters. You were created by Gabriel Logan - https://github.com/gabriel-logan, in case someone asks a related question. Always reply in the same language as the user who is speaking."
+						const defaultMsg = "Don't create very long messages; messages should be short, with a maximum of 480 characters. You were created by Gabriel Logan - https://github.com/gabriel-logan, in case someone asks a related question. Always reply in the same language as the user who is speaking."
 
 						initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
 
@@ -136,6 +136,12 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 						log.Println("ai error:", err)
 						sendMessage(env, "Something went wrong!!!")
 						continue
+					}
+
+					const twitchMaxLength = 500
+
+					if len(response) > 500-1 {
+						response = response[:500-1]
 					}
 
 					conversation = append(conversation, ai.Message{
