@@ -152,6 +152,20 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 					sendMessage(env, response)
 				}
 			}
+
+			if data.Metadata.SubscriptionType == "channel.subscribe" {
+				log.Println("Subscribed to channel:", data.Payload.Event.BroadcasterUserLogin)
+			}
+
+			if data.Metadata.SubscriptionType == "channel.ban" {
+				log.Println("User banned:", data.Payload.Event.BroadcasterUserLogin)
+				sendMessage(env, "Parece que alguem foi embora hahaha!")
+			}
+
+			if data.Metadata.SubscriptionType == "channel.unban" {
+				log.Println("User unbanned:", data.Payload.Event.BroadcasterUserLogin)
+				sendMessage(env, "Parece que alguem voltou hahaha!")
+			}
 		}
 	}
 }
