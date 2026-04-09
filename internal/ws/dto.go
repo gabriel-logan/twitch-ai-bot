@@ -12,6 +12,7 @@ type WSMessagePayload struct {
 	Event struct {
 		BroadcasterUserLogin string `json:"broadcaster_user_login"`
 		ChatterUserLogin     string `json:"chatter_user_login"`
+		SystemMessage        string `json:"system_message"`
 		Message              struct {
 			Text string `json:"text"`
 		} `json:"message"`

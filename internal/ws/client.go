@@ -112,6 +112,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 
 			eventSubTypes := []string{
 				"channel.chat.message",
+				"channel.chat.notification",
 			}
 
 			for _, eventSubType := range eventSubTypes {
@@ -119,6 +120,27 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 			}
 
 		case "notification":
+			if len(conversation) == 0 {
+				systemTxt, err := helper.LoadFile("system_prompt.txt")
+				if err != nil {
+					log.Println("✖ Error loading system_prompt.txt:", err)
+					return
+				}
+
+				initialSystemPrompt := systemTxt
+
+				const defaultMsg = "Don't create very long messages; messages should be short, with a maximum of 480 characters. You were created by Gabriel Logan - https://github.com/gabriel-logan, in case someone asks a related question. Always reply in the same language as the user who is speaking."
+
+				initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
+
+				conversation = append(conversation, ai.Message{
+					Role:    "system",
+					Content: initialSystemPrompt,
+				})
+			}
+
+			const twitchMaxLength = 500
+
 			if data.Metadata.SubscriptionType == "channel.chat.message" {
 				if data.Payload.Event.ChatterUserLogin == env.TwitchBotUserName {
 					continue
@@ -133,25 +155,6 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 				if strings.Contains(msg, env.TwitchKeyWordToCallBot) {
 					user := data.Payload.Event.ChatterUserLogin
 
-					if len(conversation) == 0 {
-						systemTxt, err := helper.LoadFile("system_prompt.txt")
-						if err != nil {
-							log.Println("✖ Error loading system_prompt.txt:", err)
-							return
-						}
-
-						initialSystemPrompt := systemTxt
-
-						const defaultMsg = "Don't create very long messages; messages should be short, with a maximum of 480 characters. You were created by Gabriel Logan - https://github.com/gabriel-logan, in case someone asks a related question. Always reply in the same language as the user who is speaking."
-
-						initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
-
-						conversation = append(conversation, ai.Message{
-							Role:    "system",
-							Content: initialSystemPrompt,
-						})
-					}
-
 					conversation = append(conversation, ai.Message{
 						Role:    "user",
 						Content: user + ": " + msg,
@@ -163,8 +166,6 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 						sendMessage("Something went wrong!!!")
 						continue
 					}
-
-					const twitchMaxLength = 500
 
 					responseRunes := []rune(response)
 					if len(responseRunes) > twitchMaxLength {
@@ -184,6 +185,31 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 
 					sendMessage(response)
 				}
+			}
+
+			if data.Metadata.SubscriptionType == "channel.chat.notification" {
+				conversation = append(conversation, ai.Message{
+					Role:    "user",
+					Content: "notification: " + data.Payload.Event.SystemMessage + " Respond to the user based on this. More info if exists: " + data.Payload.Event.Message.Text,
+				})
+
+				response, err := ai.CallGroq(conversation)
+				if err != nil {
+					log.Println("ai error processing notification: ", err)
+					continue
+				}
+
+				responseRunes := []rune(response)
+				if len(responseRunes) > twitchMaxLength {
+					response = string(responseRunes[:twitchMaxLength])
+				}
+
+				conversation = append(conversation, ai.Message{
+					Role:    "assistant",
+					Content: response,
+				})
+
+				sendMessage(response)
 			}
 		}
 	}
