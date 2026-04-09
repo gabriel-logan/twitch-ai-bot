@@ -320,7 +320,8 @@
         {{ end }}
 
         <div class="search-box">
-            <input type="text" id="loginInput" class="input" placeholder="Enter Twitch login (e.g. say_seven)" />
+            <input type="text" id="loginInput" class="input"
+                placeholder="Enter Twitch login (e.g. say_seven,sev7n_bot)" />
 
             <button onclick="fetchUser()" class="button">
                 Fetch User Info
@@ -376,23 +377,42 @@
             }
 
             async function fetchUser() {
-                const login = document.getElementById("loginInput").value.trim()
+                const inputEl = document.getElementById("loginInput")
+                const resultEl = document.getElementById("result")
 
-                if (!login) {
+                const input = inputEl.value.trim()
+
+                if (!input) {
                     alert("Please enter a login")
                     return
                 }
 
+                const logins = input
+                    .split(",")
+                    .map(l => l.trim())
+                    .filter(Boolean)
+
+                const params = new URLSearchParams()
+
+                for (const login of logins) {
+                    params.append("login", login)
+                }
+
                 try {
-                    const res = await fetch(`/api/twitch/user-info?login=${login}`)
+                    resultEl.textContent = "Loading..."
+
+                    const res = await fetch(`/api/twitch/user-info?${params.toString()}`)
+
+                    if (!res.ok) {
+                        throw new Error(`HTTP ${res.status}`)
+                    }
+
                     const data = await res.json()
 
-                    document.getElementById("result").textContent =
-                        JSON.stringify(data, null, 2)
+                    resultEl.textContent = JSON.stringify(data, null, 2)
                 } catch (err) {
                     console.error(err)
-                    document.getElementById("result").textContent =
-                        "Failed to fetch user"
+                    resultEl.textContent = "Failed to fetch user(s)"
                 }
             }
 

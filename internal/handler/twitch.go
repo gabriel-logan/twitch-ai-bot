@@ -46,7 +46,21 @@ func GetTwitchUserInfo(c *gin.Context) {
 	}
 
 	q := req.URL.Query()
-	q.Add("login", c.Query("login"))
+
+	logins := c.QueryArray("login")
+
+	if len(logins) == 0 {
+		c.JSON(http.StatusBadRequest, "No logins provided, please provide at least one login")
+		return
+	}
+
+	for _, login := range logins {
+		if login == "" {
+			continue
+		}
+
+		q.Add("login", login)
+	}
 
 	req.URL.RawQuery = q.Encode()
 
