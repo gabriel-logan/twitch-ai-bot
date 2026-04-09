@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	conversation = []ai.Message{}
+	conversation = []ai.RequestMessage{}
 	clientHttp   = &http.Client{
 		Timeout: 10 * time.Second,
 	}
@@ -101,8 +101,9 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 
 		initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
 
-		conversation = append(conversation, ai.Message{
+		conversation = append(conversation, ai.RequestMessage{
 			Role:    "system",
+			Name:    env.AppName,
 			Content: initialSystemPrompt,
 		})
 	}
@@ -155,9 +156,10 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 				if strings.Contains(msg, env.TwitchKeyWordToCallBot) {
 					user := data.Payload.Event.ChatterUserLogin
 
-					conversation = append(conversation, ai.Message{
+					conversation = append(conversation, ai.RequestMessage{
 						Role:    "user",
-						Content: user + ": " + msg,
+						Name:    user,
+						Content: msg,
 					})
 
 					response, err := ai.CallGroq(conversation)
@@ -172,8 +174,9 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 						response = string(responseRunes[:twitchMaxLength])
 					}
 
-					conversation = append(conversation, ai.Message{
+					conversation = append(conversation, ai.RequestMessage{
 						Role:    "assistant",
+						Name:    env.TwitchKeyWordToCallBot,
 						Content: response,
 					})
 
@@ -188,9 +191,10 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 			}
 
 			if data.Metadata.SubscriptionType == "channel.chat.notification" {
-				conversation = append(conversation, ai.Message{
+				conversation = append(conversation, ai.RequestMessage{
 					Role:    "user",
-					Content: "notification: " + data.Payload.Event.SystemMessage + " Respond to the user based on this. More info if exists: " + data.Payload.Event.Message.Text,
+					Name:    "notification",
+					Content: data.Payload.Event.SystemMessage + " Respond to the user based on this. More info if exists: " + data.Payload.Event.Message.Text,
 				})
 
 				response, err := ai.CallGroq(conversation)
@@ -204,8 +208,9 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					response = string(responseRunes[:twitchMaxLength])
 				}
 
-				conversation = append(conversation, ai.Message{
+				conversation = append(conversation, ai.RequestMessage{
 					Role:    "assistant",
+					Name:    env.TwitchKeyWordToCallBot,
 					Content: response,
 				})
 

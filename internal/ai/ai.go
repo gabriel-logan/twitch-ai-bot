@@ -3,23 +3,38 @@ package ai
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 )
 
-type Message struct {
+type RequestMessage struct {
 	Role    string `json:"role"`
+	Name    string `json:"name"`
 	Content string `json:"content"`
 }
 
-type Payload struct {
-	Model    string    `json:"model"`
-	Messages []Message `json:"messages"`
+type Request struct {
+	Model    string           `json:"model"`
+	Messages []RequestMessage `json:"messages"`
 }
 
-func CallGroq(messages []Message) (string, error) {
+type ResponseChoiceMessage struct {
+	Role    string  `json:"role"`
+	Content *string `json:"content"`
+}
+
+type ResponseChoice struct {
+	Message ResponseChoiceMessage `json:"message"`
+}
+
+type Response struct {
+	Model   string           `json:"model"`
+	Choices []ResponseChoice `json:"choices"`
+}
+
+func CallGroq(messages []RequestMessage) (string, error) {
 	const url = "https://api.groq.com/openai/v1/chat/completions"
 
 	env := config.GetEnv()
@@ -30,8 +45,8 @@ func CallGroq(messages []Message) (string, error) {
 	return CallGenericAI(messages, apiKey, model, url)
 }
 
-func CallGenericAI(messages []Message, apiKey, model, url string) (string, error) {
-	payload := Payload{
+func CallGenericAI(messages []RequestMessage, apiKey, model, url string) (string, error) {
+	payload := Request{
 		Model:    model,
 		Messages: messages,
 	}
@@ -58,19 +73,23 @@ func CallGenericAI(messages []Message, apiKey, model, url string) (string, error
 	}
 	defer resp.Body.Close()
 
-	var result map[string]interface{}
+	var result Response
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return "", err
 	}
 
-	choices, ok := result["choices"].([]interface{})
-	if !ok || len(choices) == 0 {
-		return "", fmt.Errorf("API response error: %v", result)
+	if len(result.Choices) == 0 {
+		log.Println("Result.Choices is empty")
+		return "", nil
 	}
 
-	msg := choices[0].(map[string]interface{})["message"].(map[string]interface{})
-	content := msg["content"].(string)
+	msg := result.Choices[0].Message.Content
 
-	return content, nil
+	if msg == nil {
+		log.Println("Result.Choices.Message.Content is nil")
+		return "", nil
+	}
+
+	return *msg, nil
 }
