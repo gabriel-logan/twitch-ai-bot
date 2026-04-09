@@ -52,7 +52,7 @@
             text-align: center;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 480px;
+            max-width: 600px;
             border: 1px solid var(--card-border);
         }
 
@@ -245,6 +245,11 @@
             background: var(--text-secondary);
         }
 
+        .current-data-container p {
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 16px;
@@ -297,10 +302,6 @@
                 font-size: 0.8rem;
                 padding: 12px;
             }
-
-            .current-data-container p {
-                font-size: 0.9rem;
-            }
         }
     </style>
 </head>
@@ -346,10 +347,24 @@
                 To persist them, make sure to copy the values into your <code>.env</code> file.
             </p>
 
-            <input type="number" id="broadcasterId" class="input" placeholder="Twitch Broadcaster ID" />
-            <input type="number" id="botUserId" class="input" placeholder="Twitch Bot User ID" />
-            <input type="text" id="botUserName" class="input" placeholder="Twitch Bot Username" />
-            <input type="text" id="keyword" class="input" placeholder="Keyword to call bot (ex: jesus)" />
+            <p style="
+                color: var(--text-secondary);
+                font-size: 0.85rem;
+                margin-bottom: 12px;
+                line-height: 1.4;
+            ">
+                <code>.env</code> file should be located in the same directory as the <code>main.go</code> file.
+            </p>
+
+            <p>
+                To reset the settings to those defined in the .env file, simply restart the server.
+            </p>
+
+            <input type="number" id="broadcasterId" class="input" placeholder="Twitch Broadcaster ID" maxlength="50" />
+            <input type="number" id="botUserId" class="input" placeholder="Twitch Bot User ID" maxlength="50" />
+            <input type="text" id="botUserName" class="input" placeholder="Twitch Bot Username" maxlength="50" />
+            <input type="text" id="keyword" class="input" placeholder="Keyword to call bot (ex: jesus)"
+                maxlength="50" />
 
             <button onclick="setEnvironment()" class="button">
                 Save Environment
