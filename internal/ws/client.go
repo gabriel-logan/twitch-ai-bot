@@ -32,10 +32,14 @@ func StartBot() {
 	for {
 		select {
 		case <-ctx.Done():
-			log.Println("Closing connection...: ", ctx.Err())
 			return
 		default:
 			run(ctx)
+
+			if ctx.Err() != nil {
+				log.Println("Closing connection...: ", ctx.Err())
+				return
+			}
 
 			log.Println("Reconnecting... (5 seconds)")
 
@@ -71,16 +75,13 @@ func run(ctx context.Context) {
 
 	go func() {
 		<-ctx.Done()
-
-		log.Println("Closing connection...: ", ctx.Err())
-
 		conn.Close()
 	}()
 
-	listenTwitch(conn)
+	listenTwitch(ctx, conn)
 }
 
-func listenTwitch(conn *websocket.Conn) { // nosonar
+func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 	env := config.GetEnv()
 
 	var sessionID string
@@ -88,7 +89,11 @@ func listenTwitch(conn *websocket.Conn) { // nosonar
 	for {
 		_, msg, err := conn.ReadMessage()
 		if err != nil {
-			log.Println("read error:", err)
+			if ctx.Err() != nil {
+				return
+			}
+
+			log.Println("read error: ", err)
 			return
 		}
 
