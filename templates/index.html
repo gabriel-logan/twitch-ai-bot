@@ -311,6 +311,7 @@
 
         {{ if .isLoggedIn }}
         <p>You are logged in</p>
+        <p>Bot is {{ if .isBotOn }}ON{{ else }}OFF{{ end }}</p>
         <a href="/api/auth/sign-out/twitch" class="btn logout">Logout</a>
 
         {{ if .isBotOn }}
