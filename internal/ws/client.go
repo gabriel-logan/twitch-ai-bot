@@ -95,7 +95,13 @@ func listenTwitch(conn *websocket.Conn) { // nosonar
 
 			log.Println("Session ID:", sessionID)
 
-			go registerEventSub(sessionID, "channel.chat.message")
+			eventSubTypes := []string{
+				"channel.chat.message",
+			}
+
+			for _, eventSubType := range eventSubTypes {
+				go registerEventSub(sessionID, eventSubType)
+			}
 
 		case "notification":
 			if data.Metadata.SubscriptionType == "channel.chat.message" {
@@ -203,6 +209,8 @@ func registerEventSub(sessionID, eventSubType string) {
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Client-Id", env.TwitchClientID)
 	req.Header.Set("Content-Type", "application/json")
+
+	log.Printf("Registering eventsub type: %s \n", eventSubType)
 
 	clientHttp.Timeout = env.ContextRequestDuration
 	resp, err := clientHttp.Do(req)
