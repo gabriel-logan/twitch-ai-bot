@@ -22,6 +22,8 @@ func main() {
 
 	r.LoadHTMLGlob("templates/*")
 
+	r.Static("/public", "./public")
+
 	router.RegisterRouter(r)
 
 	log.Println("Server running at: http://localhost:" + env.ServerPort)

@@ -11,18 +11,21 @@ build_linux:
 	cp .env bin/linux/.env
 	cp -r templates bin/linux
 	cp system_prompt.txt bin/linux/system_prompt.txt
+	cp -r public bin/linux
 
 build_windows:
 	GOOS=windows GOARCH=amd64 go build -o bin/windows/$(BINARY_NAME).exe $(API_DIST)/main.go
 	cp .env bin/windows/.env
 	cp -r templates bin/windows
 	cp system_prompt.txt bin/windows/system_prompt.txt
+	cp -r public bin/windows
 
 build_darwin:
 	GOOS=darwin GOARCH=amd64 go build -o bin/darwin/$(BINARY_NAME) $(API_DIST)/main.go
 	cp .env bin/darwin/.env
 	cp -r templates bin/darwin
 	cp system_prompt.txt bin/darwin/system_prompt.txt
+	cp -r public bin/darwin
 
 build: build_linux build_windows build_darwin
 	
