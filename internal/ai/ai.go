@@ -3,6 +3,7 @@ package ai
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -72,6 +73,10 @@ func CallGenericAI(messages []RequestMessage, apiKey, model, url string) (string
 		return "", err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("API error: status %d", resp.StatusCode)
+	}
 
 	var result Response
 	err = json.NewDecoder(resp.Body).Decode(&result)
