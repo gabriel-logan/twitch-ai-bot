@@ -21,14 +21,16 @@ func Index(c *gin.Context) {
 	currentTwitchBroadcasterID := env.TwitchBroadcasterID
 	currentTwitchBotUserID := env.TwitchBotUserID
 	currentTwitchBotUserName := env.TwitchBotUserName
+	currentTwitchKeyWordToCallBot := env.TwitchKeyWordToCallBot
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title":      env.AppName,
 		"isLoggedIn": IsLoggedIn,
 		"isBotOn":    isBotOn,
 
-		"currentTwitchBroadcasterID": currentTwitchBroadcasterID,
-		"currentTwitchBotUserID":     currentTwitchBotUserID,
-		"currentTwitchBotUserName":   currentTwitchBotUserName,
+		"currentTwitchBroadcasterID":    currentTwitchBroadcasterID,
+		"currentTwitchBotUserID":        currentTwitchBotUserID,
+		"currentTwitchBotUserName":      currentTwitchBotUserName,
+		"currentTwitchKeyWordToCallBot": currentTwitchKeyWordToCallBot,
 	})
 }

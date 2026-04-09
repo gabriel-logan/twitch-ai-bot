@@ -15,6 +15,7 @@ func RegisterRouter(router *gin.Engine) {
 		apiRouter.GET("/auth/sign-out/twitch", handler.SignOutTwitch)
 
 		apiRouter.GET("/twitch/user-info", handler.GetTwitchUserInfo)
+		apiRouter.POST("/twitch/set-environment", handler.SetEnvironment)
 		apiRouter.POST("/twitch/start-bot", handler.StartTwitchBot)
 		apiRouter.POST("/twitch/stop-bot", handler.StopTwitchBot)
 	}

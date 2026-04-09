@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
@@ -28,6 +29,13 @@ type UserInfoData struct {
 
 type UserInfo struct {
 	Data []UserInfoData `json:"data"`
+}
+
+type Environment struct {
+	TwitchBroadcasterID string `json:"twitch_broadcaster_id"`
+	TwitchBotUserID     string `json:"twitch_bot_user_id"`
+	TwitchBotUserName   string `json:"twitch_bot_user_name"`
+	TwitchKeyWordToCall string `json:"twitch_key_word_to_call"`
 }
 
 func GetTwitchUserInfo(c *gin.Context) {
@@ -95,6 +103,35 @@ func GetTwitchUserInfo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, marshaledBody)
+}
+
+func SetEnvironment(c *gin.Context) {
+	env := Environment{
+		TwitchBroadcasterID: c.Query("twitch_broadcaster_id"),
+		TwitchBotUserID:     c.Query("twitch_bot_user_id"),
+		TwitchBotUserName:   c.Query("twitch_bot_user_name"),
+		TwitchKeyWordToCall: c.Query("twitch_key_word_to_call"),
+	}
+
+	if env.TwitchBroadcasterID != "" {
+		os.Setenv("TWITCH_BROADCASTER_ID", env.TwitchBroadcasterID)
+	}
+
+	if env.TwitchBotUserID != "" {
+		os.Setenv("TWITCH_BOT_USER_ID", env.TwitchBotUserID)
+	}
+
+	if env.TwitchBotUserName != "" {
+		os.Setenv("TWITCH_BOT_USER_NAME", env.TwitchBotUserName)
+	}
+
+	if env.TwitchKeyWordToCall != "" {
+		os.Setenv("TWITCH_KEY_WORD_TO_CALL_BOT", env.TwitchKeyWordToCall)
+	}
+
+	config.ReloadEnv()
+
+	c.JSON(http.StatusOK, "Environment set")
 }
 
 func StartTwitchBot(c *gin.Context) {

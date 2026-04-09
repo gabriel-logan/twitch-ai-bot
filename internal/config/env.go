@@ -136,6 +136,26 @@ func InitEnv() *Env {
 	return env
 }
 
+func ReloadEnv() {
+	env = &Env{
+		GinMode:                 mustExistGoEnv("GIN_MODE"),
+		AppName:                 mustExistString("APP_NAME"),
+		ServerPort:              mustExistString("SERVER_PORT"),
+		ServerTrustedProxies:    mustExistStringSlice("SERVER_TRUSTED_PROXIES"),
+		TwitchClientID:          mustExistString("TWITCH_CLIENT_ID"),
+		TwitchClientSecret:      mustExistString("TWITCH_CLIENT_SECRET"),
+		TwitchClientRedirectURI: mustExistString("TWITCH_CLIENT_REDIRECT_URI"),
+		TwitchBroadcasterID:     mustExistString("TWITCH_BROADCASTER_ID"),
+		TwitchBotUserID:         mustExistString("TWITCH_BOT_USER_ID"),
+		TwitchBotUserName:       mustExistString("TWITCH_BOT_USER_NAME"),
+		TwitchKeyWordToCallBot:  mustExistString("TWITCH_KEY_WORD_TO_CALL_BOT"),
+		GroqAPIKey:              mustExistString("GROQ_API_KEY"),
+		GroqModel:               mustExistString("GROQ_MODEL"),
+		GroqMaxContextInput:     mustExistInt("GROQ_MAX_CONTEXT_INPUT"),
+		ContextRequestDuration:  mustExistDuration("CONTEXT_REQUEST_DURATION"),
+	}
+}
+
 func GetEnv() *Env {
 	if env == nil {
 		log.Fatal("env not initialized, call InitEnv first")
