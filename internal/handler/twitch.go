@@ -13,19 +13,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type UserInfoData struct {
+	BroadcasterType string `json:"broadcaster_type"`
+	CreatedAt       string `json:"created_at"`
+	Description     string `json:"description"`
+	DisplayName     string `json:"display_name"`
+	ID              string `json:"id"`
+	Login           string `json:"login"`
+	OfflineImageURL string `json:"offline_image_url"`
+	ProfileImageURL string `json:"profile_image_url"`
+	Type            string `json:"type"`
+	ViewCount       int    `json:"view_count"`
+}
+
 type UserInfo struct {
-	Data []struct {
-		BroadcasterType string `json:"broadcaster_type"`
-		CreatedAt       string `json:"created_at"`
-		Description     string `json:"description"`
-		DisplayName     string `json:"display_name"`
-		ID              string `json:"id"`
-		Login           string `json:"login"`
-		OfflineImageURL string `json:"offline_image_url"`
-		ProfileImageURL string `json:"profile_image_url"`
-		Type            string `json:"type"`
-		ViewCount       int    `json:"view_count"`
-	} `json:"data"`
+	Data []UserInfoData `json:"data"`
 }
 
 func GetTwitchUserInfo(c *gin.Context) {
@@ -89,7 +91,7 @@ func StartTwitchBot(c *gin.Context) {
 		return
 	}
 
-	ws.StartBot()
+	go ws.StartBot()
 
 	c.JSON(http.StatusOK, "Bot started")
 }

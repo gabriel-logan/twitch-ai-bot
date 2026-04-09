@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/ai"
@@ -17,43 +16,19 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type WSMessage struct {
-	Metadata struct {
-		MessageType      string `json:"message_type"`
-		SubscriptionType string `json:"subscription_type"`
-	} `json:"metadata"`
-	Payload struct {
-		Session struct {
-			ID string `json:"id"`
-		} `json:"session"`
-		Event struct {
-			BroadcasterUserLogin string `json:"broadcaster_user_login"`
-			ChatterUserLogin     string `json:"chatter_user_login"`
-			Message              struct {
-				Text string `json:"text"`
-			} `json:"message"`
-		} `json:"event"`
-	} `json:"payload"`
-}
-
 var (
 	conversation = []ai.Message{}
-	once         sync.Once
 	clientHttp   = &http.Client{
 		Timeout: 10 * time.Second,
 	}
 )
 
 func StartBot() {
-	once.Do(func() {
-		go func() {
-			for {
-				run()
-				log.Println("Reconnecting... (5 seconds)")
-				time.Sleep(5 * time.Second)
-			}
-		}()
-	})
+	for {
+		run()
+		log.Println("Reconnecting... (5 seconds)")
+		time.Sleep(5 * time.Second)
+	}
 }
 
 func run() {
@@ -179,16 +154,16 @@ func registerEventSub(sessionID, eventSubType string) {
 
 	token := storage.GetOauthToken()
 
-	body := map[string]interface{}{
-		"type":    eventSubType,
-		"version": "1",
-		"condition": map[string]string{
-			"broadcaster_user_id": env.TwitchBroadcasterID,
-			"user_id":             env.TwitchBotUserID,
+	body := EventSubRequest{
+		Type:    eventSubType,
+		Version: "1",
+		Condition: EventSubRequestCondition{
+			BroadcasterUserID: env.TwitchBroadcasterID,
+			UserID:            env.TwitchBotUserID,
 		},
-		"transport": map[string]string{
-			"method":     "websocket",
-			"session_id": sessionID,
+		Transport: EventSubRequestTransport{
+			Method:    "websocket",
+			SessionID: sessionID,
 		},
 	}
 
@@ -236,10 +211,10 @@ func sendMessage(message string) {
 
 	token := storage.GetOauthToken()
 
-	body := map[string]string{
-		"broadcaster_id": env.TwitchBroadcasterID,
-		"sender_id":      env.TwitchBotUserID,
-		"message":        message,
+	body := SendMessageRequest{
+		BroadcasterID: env.TwitchBroadcasterID,
+		SenderID:      env.TwitchBotUserID,
+		Message:       message,
 	}
 
 	jsonBody, err := json.Marshal(body)
