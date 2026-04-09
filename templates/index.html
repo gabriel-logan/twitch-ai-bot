@@ -297,6 +297,10 @@
                 font-size: 0.8rem;
                 padding: 12px;
             }
+
+            .current-data-container p {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -323,6 +327,13 @@
             </button>
 
             <pre id="result" class="result"></pre>
+
+            <div class="current-data-container">
+                <p>Current Twitch Broadcaster ID: <span class="current-data">{{ .currentTwitchBroadcasterID }}</span>
+                </p>
+                <p>Current Twitch Bot User ID: <span class="current-data">{{ .currentTwitchBotUserID }}</span></p>
+                <p>Current Twitch Bot User Name: <span class="current-data">{{ .currentTwitchBotUserName }}</span></p>
+            </div>
         </div>
 
         <script>
