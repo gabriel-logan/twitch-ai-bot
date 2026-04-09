@@ -2,6 +2,7 @@ package ws
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"log"
@@ -21,17 +22,43 @@ var (
 	clientHttp   = &http.Client{
 		Timeout: 10 * time.Second,
 	}
+	ctx       context.Context
+	ctxcancel context.CancelFunc
 )
 
 func StartBot() {
+	ctx, ctxcancel = context.WithCancel(context.Background())
+
 	for {
-		run()
-		log.Println("Reconnecting... (5 seconds)")
-		time.Sleep(5 * time.Second)
+		select {
+		case <-ctx.Done():
+			log.Println("Closing connection...: ", ctx.Err())
+			return
+		default:
+			run(ctx)
+
+			log.Println("Reconnecting... (5 seconds)")
+
+			select {
+			case <-ctx.Done():
+				return
+			case <-time.After(5 * time.Second):
+			}
+		}
 	}
 }
 
-func run() {
+func StopBot() {
+	if ctxcancel != nil {
+		ctxcancel()
+
+		storage.SetBotIsOn(false)
+
+		log.Println("Bot stopped")
+	}
+}
+
+func run(ctx context.Context) {
 	const twitchWS = "wss://eventsub.wss.twitch.tv/ws"
 
 	conn, response, err := websocket.DefaultDialer.Dial(twitchWS, nil)
@@ -41,6 +68,14 @@ func run() {
 		return
 	}
 	defer conn.Close()
+
+	go func() {
+		<-ctx.Done()
+
+		log.Println("Closing connection...: ", ctx.Err())
+
+		conn.Close()
+	}()
 
 	listenTwitch(conn)
 }

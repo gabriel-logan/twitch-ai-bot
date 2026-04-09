@@ -16,5 +16,6 @@ func RegisterRouter(router *gin.Engine) {
 
 		apiRouter.GET("/twitch/user-info", handler.GetTwitchUserInfo)
 		apiRouter.POST("/twitch/start-bot", handler.StartTwitchBot)
+		apiRouter.POST("/twitch/stop-bot", handler.StopTwitchBot)
 	}
 }

@@ -95,3 +95,16 @@ func StartTwitchBot(c *gin.Context) {
 
 	c.JSON(http.StatusOK, "Bot started")
 }
+
+func StopTwitchBot(c *gin.Context) {
+	isBotOn := storage.GetBotIsOn()
+
+	if !isBotOn {
+		c.JSON(http.StatusOK, "Bot already stopped")
+		return
+	}
+
+	go ws.StopBot()
+
+	c.JSON(http.StatusOK, "Bot stopped")
+}

@@ -8,6 +8,7 @@ import (
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
+	"github.com/gabriel-logan/twitch-ai-bot/internal/ws"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +21,14 @@ type CallbackTwitchResponse struct {
 }
 
 func SignInTwitch(c *gin.Context) {
+	token := storage.GetOauthToken()
+	isLoggedIn := token != ""
+
+	if isLoggedIn {
+		c.Redirect(http.StatusTemporaryRedirect, "/")
+		return
+	}
+
 	env := config.GetEnv()
 
 	ctx, cancel := context.WithTimeout(c.Request.Context(), env.ContextRequestDuration)
@@ -46,7 +55,21 @@ func SignInTwitch(c *gin.Context) {
 }
 
 func SignOutTwitch(c *gin.Context) {
+	token := storage.GetOauthToken()
+	isLoggedIn := token != ""
+
+	if !isLoggedIn {
+		c.Redirect(http.StatusTemporaryRedirect, "/")
+		return
+	}
+
+	if storage.GetBotIsOn() {
+		go ws.StopBot()
+	}
+
 	storage.ClearOauthToken()
+
+	storage.SetBotIsOn(false)
 
 	c.Redirect(http.StatusTemporaryRedirect, "/")
 }
