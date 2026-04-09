@@ -64,10 +64,12 @@ func run() {
 	}
 	defer conn.Close()
 
-	listenTwitch(conn, config.GetEnv())
+	listenTwitch(conn)
 }
 
-func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
+func listenTwitch(conn *websocket.Conn) { // nosonar
+	env := config.GetEnv()
+
 	var sessionID string
 
 	for {
@@ -90,7 +92,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 
 			log.Println("Session ID:", sessionID)
 
-			go registerEventSub(sessionID, env)
+			go registerEventSub(sessionID, "channel.chat.message")
 
 		case "notification":
 			if data.Metadata.SubscriptionType == "channel.chat.message" {
@@ -101,7 +103,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 				msg := strings.ToLower(strings.TrimSpace(data.Payload.Event.Message.Text))
 
 				if msg == "ping" {
-					sendMessage(env, "pong")
+					sendMessage("pong")
 				}
 
 				if strings.Contains(msg, env.TwitchKeyWordToCallBot) {
@@ -134,7 +136,7 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 					response, err := ai.CallGroq(conversation)
 					if err != nil {
 						log.Println("ai error:", err)
-						sendMessage(env, "Something went wrong!!!")
+						sendMessage("Something went wrong!!!")
 						continue
 					}
 
@@ -156,18 +158,20 @@ func listenTwitch(conn *websocket.Conn, env *config.Env) { // nosonar
 						conversation = append(conversation[:1], conversation[len(conversation)-maxMessages:]...)
 					}
 
-					sendMessage(env, response)
+					sendMessage(response)
 				}
 			}
 		}
 	}
 }
 
-func registerEventSub(sessionID string, env *config.Env) {
+func registerEventSub(sessionID, eventSubType string) {
+	env := config.GetEnv()
+
 	token := storage.GetOauthToken()
 
 	body := map[string]interface{}{
-		"type":    "channel.chat.message",
+		"type":    eventSubType,
 		"version": "1",
 		"condition": map[string]string{
 			"broadcaster_user_id": env.TwitchBroadcasterID,
@@ -212,10 +216,12 @@ func registerEventSub(sessionID string, env *config.Env) {
 
 	storage.SetBotIsOn(true)
 
-	log.Println("EventSub status:", resp.Status)
+	log.Printf("EventSub '%s' - status: %v", eventSubType, resp.Status)
 }
 
-func sendMessage(env *config.Env, message string) {
+func sendMessage(message string) {
+	env := config.GetEnv()
+
 	token := storage.GetOauthToken()
 
 	body := map[string]string{
