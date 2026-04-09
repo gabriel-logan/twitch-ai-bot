@@ -321,7 +321,6 @@ func sendMessage(message string) {
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Println("error reading response body:", err)
-			return
 		}
 
 		log.Println("response body:", string(bodyBytes))
