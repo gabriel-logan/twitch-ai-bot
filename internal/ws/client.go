@@ -84,7 +84,28 @@ func run(ctx context.Context) {
 func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 	env := config.GetEnv()
 
+	const twitchMaxLength = 500
+
 	var sessionID string
+
+	if len(conversation) == 0 {
+		systemTxt, err := helper.LoadFile("system_prompt.txt")
+		if err != nil {
+			log.Println("✖ Error loading system_prompt.txt:", err)
+			return
+		}
+
+		initialSystemPrompt := systemTxt
+
+		const defaultMsg = "Don't create very long messages; messages should be short, with a maximum of 480 characters. You were created by Gabriel Logan - https://github.com/gabriel-logan, in case someone asks a related question. Always reply in the same language as the user who is speaking."
+
+		initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
+
+		conversation = append(conversation, ai.Message{
+			Role:    "system",
+			Content: initialSystemPrompt,
+		})
+	}
 
 	for {
 		_, msg, err := conn.ReadMessage()
@@ -120,32 +141,11 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 			}
 
 		case "notification":
-			if len(conversation) == 0 {
-				systemTxt, err := helper.LoadFile("system_prompt.txt")
-				if err != nil {
-					log.Println("✖ Error loading system_prompt.txt:", err)
-					return
-				}
-
-				initialSystemPrompt := systemTxt
-
-				const defaultMsg = "Don't create very long messages; messages should be short, with a maximum of 480 characters. You were created by Gabriel Logan - https://github.com/gabriel-logan, in case someone asks a related question. Always reply in the same language as the user who is speaking."
-
-				initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
-
-				conversation = append(conversation, ai.Message{
-					Role:    "system",
-					Content: initialSystemPrompt,
-				})
+			if data.Payload.Event.ChatterUserLogin == env.TwitchBotUserName {
+				continue
 			}
 
-			const twitchMaxLength = 500
-
 			if data.Metadata.SubscriptionType == "channel.chat.message" {
-				if data.Payload.Event.ChatterUserLogin == env.TwitchBotUserName {
-					continue
-				}
-
 				msg := strings.ToLower(strings.TrimSpace(data.Payload.Event.Message.Text))
 
 				if msg == "ping" {
@@ -208,6 +208,12 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					Role:    "assistant",
 					Content: response,
 				})
+
+				maxMessages := env.GroqMaxContextInput
+
+				if len(conversation) > maxMessages {
+					conversation = append(conversation[:1], conversation[len(conversation)-maxMessages:]...)
+				}
 
 				sendMessage(response)
 			}
