@@ -39,6 +39,9 @@ type WSMessage struct {
 var (
 	conversation = []ai.Message{}
 	once         sync.Once
+	clientHttp   = &http.Client{
+		Timeout: 10 * time.Second,
+	}
 )
 
 func StartBot() {
@@ -201,7 +204,8 @@ func registerEventSub(sessionID, eventSubType string) {
 	req.Header.Set("Client-Id", env.TwitchClientID)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	clientHttp.Timeout = env.ContextRequestDuration
+	resp, err := clientHttp.Do(req)
 	if err != nil {
 		log.Println("eventsub error:", err)
 		return
@@ -248,7 +252,8 @@ func sendMessage(message string) {
 	req.Header.Set("Client-Id", env.TwitchClientID)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	clientHttp.Timeout = env.ContextRequestDuration
+	resp, err := clientHttp.Do(req)
 	if err != nil {
 		log.Println("send message error:", err)
 		return

@@ -49,7 +49,10 @@ func CallGenericAI(messages []Message, apiKey, model, url string) (string, error
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	clientHttp := &http.Client{
+		Timeout: config.GetEnv().ContextRequestDuration,
+	}
+	resp, err := clientHttp.Do(req)
 	if err != nil {
 		return "", err
 	}
