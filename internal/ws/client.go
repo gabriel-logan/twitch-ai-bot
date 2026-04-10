@@ -170,7 +170,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 						Content: msg,
 					})
 
-					response, err := generateAIResponse(conversation.BuildMessages(), env.GroqModel, env.GroqModelFallback, twitchMaxLength, "message")
+					response, err := generateAIResponse(conversation.BuildMessages(), env.GroqAPIKey, env.GroqModel, env.GroqModelFallback, twitchMaxLength, "message")
 					if err != nil {
 						sendMessage("Something went wrong!!!")
 						continue
@@ -194,7 +194,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					Content: data.Payload.Event.SystemMessage + " Respond to the user based on this. More info if exists: " + data.Payload.Event.Message.Text,
 				})
 
-				response, err := generateAIResponse(conversation.BuildMessages(), env.GroqModel, env.GroqModelFallback, twitchMaxLength, "notification")
+				response, err := generateAIResponse(conversation.BuildMessages(), env.GroqAPIKey, env.GroqModel, env.GroqModelFallback, twitchMaxLength, "notification")
 				if err != nil {
 					continue
 				}
@@ -212,12 +212,12 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 	}
 }
 
-func generateAIResponse(conversation []ai.RequestMessage, model, fallbackModel string, twitchMaxLength int, whoExecuted string) (string, error) {
-	response, err := ai.CallGroq(conversation, model)
+func generateAIResponse(conversation []ai.RequestMessage, apiKey, model, fallbackModel string, twitchMaxLength int, whoExecuted string) (string, error) {
+	response, err := ai.CallGroq(conversation, apiKey, model)
 	if err != nil {
 		log.Println(whoExecuted+": primary model error: ", err)
 
-		responseFb, errFb := ai.CallGroq(conversation, fallbackModel)
+		responseFb, errFb := ai.CallGroq(conversation, apiKey, fallbackModel)
 		if errFb != nil {
 			log.Println(whoExecuted+": fallback error: ", errFb)
 			return "", errFb

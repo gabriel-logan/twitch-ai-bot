@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 )
 
 type RequestMessage struct {
@@ -45,12 +43,8 @@ var clientHttp = &http.Client{
 	},
 }
 
-func CallGroq(messages []RequestMessage, model string) (string, error) {
+func CallGroq(messages []RequestMessage, apiKey, model string) (string, error) {
 	const url = "https://api.groq.com/openai/v1/chat/completions"
-
-	env := config.GetEnv()
-
-	apiKey := env.GroqAPIKey
 
 	return CallGenericAI(messages, apiKey, model, url)
 }
