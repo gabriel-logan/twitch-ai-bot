@@ -1,10 +1,10 @@
 # Twitch AI Bot
 
-A Twitch chatbot powered by AI that listens to your channel's chat and responds intelligently when invoked by a keyword. Supports multiple AI providers (cloud and local) with automatic fallback. Built with Go, Gin, and Twitch EventSub WebSocket API.
+A Twitch chatbot powered by AI that listens to your channel's chat and responds intelligently when invoked by a keyword. Supports multiple AI providers (cloud) with automatic fallback. Built with Go, Gin, and Twitch EventSub WebSocket API.
 
 ## Features
 
-- **Multi-Provider AI Support**: Integrates with multiple AI providers (cloud APIs and local models like llama.cpp) with automatic fallback if one goes down
+- **Multi-Provider AI Support**: Integrates with multiple AI providers (cloud APIs) with automatic fallback if one goes down
 - **AI-Powered Responses**: Generates intelligent, context-aware responses in chat
 - **Twitch EventSub Integration**: Uses Twitch's WebSocket EventSub for real-time chat monitoring
 - **OAuth2 Authentication**: Secure Twitch login flow with proper scopes (`user:read:chat`, `user:write:chat`, `user:bot`, `channel:bot`)
@@ -77,7 +77,7 @@ All configuration is done via the `.env` file:
 | `GROQ_API_KEY` | Groq API key | `gsk_...` |
 | `GROQ_MODEL` | Groq model to use (default provider) | `openai/gpt-oss-120b` |
 | `GROQ_MODEL_FALLBACK` | Groq model to use (Fallback) (default provider) | `llama-3.3-70b-versatile` |
-| `GROQ_MAX_CONTEXT_INPUT` | Max messages kept in conversation context | `25` |
+| `GROQ_MAX_CONTEXT_INPUT` | Max messages kept in conversation context - minimum is 5 | `25` |
 | `CONTEXT_REQUEST_DURATION` | Maximum request timeout | `15s` |
 
 ### Setting Up Twitch OAuth
