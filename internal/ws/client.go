@@ -18,8 +18,7 @@ import (
 )
 
 var (
-	conversation = []ai.RequestMessage{}
-	clientHttp   = &http.Client{
+	clientHttp = &http.Client{
 		Timeout: 12 * time.Second,
 		Transport: &http.Transport{
 			MaxIdleConnsPerHost: 20,
@@ -91,25 +90,28 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 
 	var sessionID string
 
-	if len(conversation) == 0 {
-		systemTxt, err := helper.LoadFile("system_prompt.txt")
-		if err != nil {
-			log.Println("✖ Error loading system_prompt.txt: ", err)
-			return
-		}
-
-		initialSystemPrompt := systemTxt
-
-		const defaultMsg = "Don't create very long messages; messages should be short, with a maximum of 480 characters. You were created by Gabriel Logan - https://github.com/gabriel-logan, in case someone asks a related question. Always reply in the same language as the user who is speaking."
-
-		initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
-
-		conversation = append(conversation, ai.RequestMessage{
-			Role:    "system",
-			Name:    env.AppName,
-			Content: initialSystemPrompt,
-		})
+	systemTxt, err := helper.LoadFile("system_prompt.txt")
+	if err != nil {
+		log.Println("✖ Error loading system_prompt.txt: ", err)
+		return
 	}
+
+	initialSystemPrompt := systemTxt
+
+	const defaultMsg = "Don't create very long messages; messages should be short, with a maximum of 480 characters. You were created by Gabriel Logan - https://github.com/gabriel-logan, in case someone asks a related question. Always reply in the same language as the user who is speaking."
+
+	initialSystemPrompt = initialSystemPrompt + defaultMsg + "Your name is defined as " + env.TwitchKeyWordToCallBot
+
+	if env.GroqMaxContextInput < 5 {
+		log.Println("GroqMaxContextInput must be at least 5")
+		return
+	}
+
+	conversation := NewConversation(env.GroqMaxContextInput, ai.RequestMessage{
+		Role:    "system",
+		Name:    env.AppName,
+		Content: initialSystemPrompt,
+	})
 
 	for {
 		_, msg, err := conn.ReadMessage()
@@ -144,6 +146,8 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 				go registerEventSub(sessionID, eventSubType)
 			}
 
+			storage.SetBotIsOn(true)
+
 		case "notification":
 			if data.Payload.Event.ChatterUserLogin == env.TwitchBotUserName {
 				continue
@@ -160,29 +164,23 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 				if strings.Contains(strings.ToLower(msg), env.TwitchKeyWordToCallBot) {
 					user := data.Payload.Event.ChatterUserLogin
 
-					conversation = append(conversation, ai.RequestMessage{
+					conversation.Add(ai.RequestMessage{
 						Role:    "user",
 						Name:    user,
 						Content: msg,
 					})
 
-					response, err := generateAIResponse(conversation, env.GroqModel, env.GroqModelFallback, twitchMaxLength, "message")
+					response, err := generateAIResponse(conversation.BuildMessages(), env.GroqModel, env.GroqModelFallback, twitchMaxLength, "message")
 					if err != nil {
 						sendMessage("Something went wrong!!!")
 						continue
 					}
 
-					conversation = append(conversation, ai.RequestMessage{
+					conversation.Add(ai.RequestMessage{
 						Role:    "assistant",
 						Name:    env.TwitchKeyWordToCallBot,
 						Content: response,
 					})
-
-					maxMessages := env.GroqMaxContextInput
-
-					if len(conversation) > maxMessages {
-						conversation = append(conversation[:1], conversation[len(conversation)-maxMessages:]...)
-					}
 
 					sendMessage(response)
 					continue
@@ -190,30 +188,25 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 			}
 
 			if data.Metadata.SubscriptionType == "channel.chat.notification" {
-				conversation = append(conversation, ai.RequestMessage{
+				conversation.Add(ai.RequestMessage{
 					Role:    "user",
 					Name:    "notification",
 					Content: data.Payload.Event.SystemMessage + " Respond to the user based on this. More info if exists: " + data.Payload.Event.Message.Text,
 				})
 
-				response, err := generateAIResponse(conversation, env.GroqModel, env.GroqModelFallback, twitchMaxLength, "notification")
+				response, err := generateAIResponse(conversation.BuildMessages(), env.GroqModel, env.GroqModelFallback, twitchMaxLength, "notification")
 				if err != nil {
 					continue
 				}
 
-				conversation = append(conversation, ai.RequestMessage{
+				conversation.Add(ai.RequestMessage{
 					Role:    "assistant",
 					Name:    env.TwitchKeyWordToCallBot,
 					Content: response,
 				})
 
-				maxMessages := env.GroqMaxContextInput
-
-				if len(conversation) > maxMessages {
-					conversation = append(conversation[:1], conversation[len(conversation)-maxMessages:]...)
-				}
-
 				sendMessage(response)
+				continue
 			}
 		}
 	}
@@ -299,8 +292,6 @@ func registerEventSub(sessionID, eventSubType string) {
 		log.Println("eventsub response: ", string(bodyBytes))
 		return
 	}
-
-	storage.SetBotIsOn(true)
 
 	log.Printf("EventSub '%s' - status: %v", eventSubType, resp.Status)
 }
