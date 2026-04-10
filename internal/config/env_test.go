@@ -312,6 +312,7 @@ func TestInitEnv(t *testing.T) {
 	t.Setenv("TWITCH_KEY_WORD_TO_CALL_BOT", "bot")
 	t.Setenv("GROQ_API_KEY", "test_groq_key")
 	t.Setenv("GROQ_MODEL", "test_model")
+	t.Setenv("GROQ_MODEL_FALLBACK", "test_model_fallback")
 	t.Setenv("GROQ_MAX_CONTEXT_INPUT", "1000")
 	t.Setenv("CONTEXT_REQUEST_DURATION", "10s")
 
@@ -353,6 +354,7 @@ func TestGetEnvValid(t *testing.T) {
 		TwitchKeyWordToCallBot:  "bot",
 		GroqAPIKey:              "groq_key",
 		GroqModel:               "model",
+		GroqModelFallback:       "model_fallback",
 		GroqMaxContextInput:     1000,
 		ContextRequestDuration:  10 * time.Second,
 	}
