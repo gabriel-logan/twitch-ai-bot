@@ -38,6 +38,10 @@ type Response struct {
 	Choices []ResponseChoice `json:"choices"`
 }
 
+var clientHttp = &http.Client{
+	Timeout: 10 * time.Second,
+}
+
 func CallGroq(messages []RequestMessage, model string) (string, error) {
 	const url = "https://api.groq.com/openai/v1/chat/completions"
 
@@ -59,7 +63,7 @@ func CallGenericAI(messages []RequestMessage, apiKey, model, url string, timeout
 		return "", err
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
 	if err != nil {
 		return "", err
 	}
@@ -67,9 +71,7 @@ func CallGenericAI(messages []RequestMessage, apiKey, model, url string, timeout
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	req.Header.Set("Content-Type", "application/json")
 
-	clientHttp := &http.Client{
-		Timeout: timeout,
-	}
+	clientHttp.Timeout = timeout
 	resp, err := clientHttp.Do(req)
 	if err != nil {
 		return "", err
@@ -94,15 +96,13 @@ func CallGenericAI(messages []RequestMessage, apiKey, model, url string, timeout
 	}
 
 	if len(result.Choices) == 0 {
-		log.Println("Result.Choices is empty")
-		return "", nil
+		return "", errors.New("No choices returned from API - empty")
 	}
 
 	msg := result.Choices[0].Message.Content
 
 	if msg == nil {
-		log.Println("Result.Choices.Message.Content is nil")
-		return "", nil
+		return "", errors.New("No content returned from API - nil")
 	}
 
 	return *msg, nil
