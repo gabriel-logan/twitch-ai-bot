@@ -49,10 +49,10 @@ func CallGroq(messages []RequestMessage, model string) (string, error) {
 
 	apiKey := env.GroqAPIKey
 
-	return CallGenericAI(messages, apiKey, model, url, env.ContextRequestDuration)
+	return CallGenericAI(messages, apiKey, model, url)
 }
 
-func CallGenericAI(messages []RequestMessage, apiKey, model, url string, timeout time.Duration) (string, error) {
+func CallGenericAI(messages []RequestMessage, apiKey, model, url string) (string, error) {
 	payload := Request{
 		Model:    model,
 		Messages: messages,
@@ -71,7 +71,6 @@ func CallGenericAI(messages []RequestMessage, apiKey, model, url string, timeout
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	req.Header.Set("Content-Type", "application/json")
 
-	clientHttp.Timeout = timeout
 	resp, err := clientHttp.Do(req)
 	if err != nil {
 		return "", err
