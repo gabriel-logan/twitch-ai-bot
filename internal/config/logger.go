@@ -11,14 +11,14 @@ import (
 
 func InitLogger() {
 	log.SetFlags(0)
-	log.SetOutput(&pmWriter{out: os.Stdout})
+	log.SetOutput(&tabWriter{out: os.Stdout})
 }
 
-type pmWriter struct {
+type tabWriter struct {
 	out io.Writer
 }
 
-func (w *pmWriter) Write(p []byte) (n int, err error) {
+func (w *tabWriter) Write(p []byte) (n int, err error) {
 	msg := strings.TrimRight(string(p), "\n")
 
 	upper := strings.ToUpper(msg)
