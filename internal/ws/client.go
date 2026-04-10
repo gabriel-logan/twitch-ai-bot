@@ -154,7 +154,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					continue
 				}
 
-				if strings.Contains(msg, env.TwitchKeyWordToCallBot) {
+				if strings.Contains(strings.ToLower(msg), env.TwitchKeyWordToCallBot) {
 					user := data.Payload.Event.ChatterUserLogin
 
 					conversation = append(conversation, ai.RequestMessage{
