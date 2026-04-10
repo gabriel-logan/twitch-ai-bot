@@ -20,7 +20,10 @@ import (
 var (
 	conversation = []ai.RequestMessage{}
 	clientHttp   = &http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: 12 * time.Second,
+		Transport: &http.Transport{
+			MaxIdleConnsPerHost: 20,
+		},
 	}
 	ctx       context.Context
 	ctxcancel context.CancelFunc
@@ -266,7 +269,7 @@ func registerEventSub(sessionID, eventSubType string) {
 
 	const baseURL = "https://api.twitch.tv/helix/eventsub/subscriptions"
 
-	req, err := http.NewRequest("POST", baseURL, bytes.NewReader(jsonBody))
+	req, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewReader(jsonBody))
 	if err != nil {
 		log.Println("eventsub error: ", err)
 		return
@@ -321,7 +324,7 @@ func sendMessage(message string) {
 
 	const baseURL = "https://api.twitch.tv/helix/chat/messages"
 
-	req, err := http.NewRequest("POST", baseURL, bytes.NewReader(jsonBody))
+	req, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewReader(jsonBody))
 	if err != nil {
 		log.Println("send message error: ", err)
 		return

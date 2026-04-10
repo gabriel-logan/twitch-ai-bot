@@ -39,7 +39,10 @@ type Response struct {
 }
 
 var clientHttp = &http.Client{
-	Timeout: 10 * time.Second,
+	Timeout: 15 * time.Second,
+	Transport: &http.Transport{
+		MaxIdleConnsPerHost: 10,
+	},
 }
 
 func CallGroq(messages []RequestMessage, model string) (string, error) {
@@ -63,7 +66,7 @@ func CallGenericAI(messages []RequestMessage, apiKey, model, url string) (string
 		return "", err
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(jsonData))
 	if err != nil {
 		return "", err
 	}
