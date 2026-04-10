@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -89,15 +88,8 @@ func GetTwitchUserInfo(c *gin.Context) {
 		return
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Printf("Error when trying to read response body: %v \n", err)
-		c.JSON(http.StatusInternalServerError, "Error when trying to read response body")
-		return
-	}
-
 	var marshaledBody UserInfo
-	if err := json.Unmarshal(body, &marshaledBody); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&marshaledBody); err != nil {
 		log.Printf("Error when trying to unmarshal response body: %v \n", err)
 		c.JSON(http.StatusInternalServerError, "Error when trying to unmarshal response body")
 		return
