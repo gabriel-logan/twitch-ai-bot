@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
@@ -106,27 +107,37 @@ func GetTwitchUserInfo(c *gin.Context) {
 }
 
 func SetEnvironment(c *gin.Context) {
-	env := Environment{
+	newEnv := Environment{
 		TwitchBroadcasterID: c.Query("twitch_broadcaster_id"),
 		TwitchBotUserID:     c.Query("twitch_bot_user_id"),
 		TwitchBotUserName:   c.Query("twitch_bot_user_name"),
 		TwitchKeyWordToCall: c.Query("twitch_key_word_to_call"),
 	}
 
-	if env.TwitchBroadcasterID != "" {
-		os.Setenv("TWITCH_BROADCASTER_ID", env.TwitchBroadcasterID)
+	if newEnv.TwitchBroadcasterID != "" {
+		if _, err := strconv.Atoi(newEnv.TwitchBroadcasterID); err != nil {
+			c.JSON(http.StatusBadRequest, "Twitch broadcaster id must be a valid integer")
+			return
+		}
+
+		os.Setenv("TWITCH_BROADCASTER_ID", newEnv.TwitchBroadcasterID)
 	}
 
-	if env.TwitchBotUserID != "" {
-		os.Setenv("TWITCH_BOT_USER_ID", env.TwitchBotUserID)
+	if newEnv.TwitchBotUserID != "" {
+		if _, err := strconv.Atoi(newEnv.TwitchBotUserID); err != nil {
+			c.JSON(http.StatusBadRequest, "Twitch bot user id must be a valid integer")
+			return
+		}
+
+		os.Setenv("TWITCH_BOT_USER_ID", newEnv.TwitchBotUserID)
 	}
 
-	if env.TwitchBotUserName != "" {
-		os.Setenv("TWITCH_BOT_USER_NAME", env.TwitchBotUserName)
+	if newEnv.TwitchBotUserName != "" {
+		os.Setenv("TWITCH_BOT_USER_NAME", newEnv.TwitchBotUserName)
 	}
 
-	if env.TwitchKeyWordToCall != "" {
-		os.Setenv("TWITCH_KEY_WORD_TO_CALL_BOT", env.TwitchKeyWordToCall)
+	if newEnv.TwitchKeyWordToCall != "" {
+		os.Setenv("TWITCH_KEY_WORD_TO_CALL_BOT", newEnv.TwitchKeyWordToCall)
 	}
 
 	config.ReloadEnv()
