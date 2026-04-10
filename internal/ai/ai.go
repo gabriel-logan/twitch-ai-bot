@@ -8,13 +8,14 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 )
 
 type RequestMessage struct {
 	Role    string `json:"role"`
-	Name    string `json:"name"`
+	Name    string `json:"name,omitempty"` // Optional
 	Content string `json:"content"`
 }
 
@@ -44,10 +45,10 @@ func CallGroq(messages []RequestMessage, model string) (string, error) {
 
 	apiKey := env.GroqAPIKey
 
-	return CallGenericAI(messages, apiKey, model, url)
+	return CallGenericAI(messages, apiKey, model, url, env.ContextRequestDuration)
 }
 
-func CallGenericAI(messages []RequestMessage, apiKey, model, url string) (string, error) {
+func CallGenericAI(messages []RequestMessage, apiKey, model, url string, timeout time.Duration) (string, error) {
 	payload := Request{
 		Model:    model,
 		Messages: messages,
@@ -67,7 +68,7 @@ func CallGenericAI(messages []RequestMessage, apiKey, model, url string) (string
 	req.Header.Set("Content-Type", "application/json")
 
 	clientHttp := &http.Client{
-		Timeout: config.GetEnv().ContextRequestDuration,
+		Timeout: timeout,
 	}
 	resp, err := clientHttp.Do(req)
 	if err != nil {
