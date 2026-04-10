@@ -3,9 +3,11 @@ package ai
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"errors"
+	"io"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
 )
@@ -74,7 +76,14 @@ func CallGenericAI(messages []RequestMessage, apiKey, model, url string) (string
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("API error: status %d", resp.StatusCode)
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Println("Error when trying to read response body: ", err)
+		}
+
+		statusCodeString := strconv.Itoa(resp.StatusCode)
+
+		return "", errors.New("API error: " + string(bodyBytes) + " - " + statusCodeString)
 	}
 
 	var result Response
