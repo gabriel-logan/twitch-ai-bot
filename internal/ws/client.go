@@ -151,6 +151,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 
 				if strings.ToLower(msg) == "ping" {
 					sendMessage("pong")
+					continue
 				}
 
 				if strings.Contains(msg, env.TwitchKeyWordToCallBot) {
@@ -181,6 +182,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					}
 
 					sendMessage(response)
+					continue
 				}
 			}
 
