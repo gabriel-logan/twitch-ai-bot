@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"log"
 	"os"
 	"strconv"
@@ -34,78 +35,164 @@ type Env struct {
 
 var env *Env
 
-func mustExistBool(key string) bool {
+func mustExistBool(key string) (bool, error) {
 	value := os.Getenv(key)
 
 	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+		return false, errors.New(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
 	}
 
-	return value == "true"
+	isBool, err := strconv.ParseBool(value)
+	if err != nil {
+		return false, errors.New(EnvironmentPrefixMsg + key + " must be a valid boolean: " + err.Error())
+	}
+
+	return isBool, nil
 }
 
-func mustExistGoEnv(key string) string {
+func mustExistGoEnv(key string) (string, error) {
 	value := os.Getenv(key)
 
 	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+		return "", errors.New(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
 	}
 
 	if value != "debug" && value != "release" {
-		log.Fatalf("%s must be debug or release", key)
+		return "", errors.New(EnvironmentPrefixMsg + key + " must be debug or release")
 	}
 
-	return value
+	return value, nil
 }
 
-func mustExistString(key string) string {
+func mustExistString(key string) (string, error) {
 	value := os.Getenv(key)
 
 	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+		return "", errors.New(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
 	}
 
-	return value
+	return value, nil
 }
 
-func mustExistInt(key string) int {
+func mustExistInt(key string) (int, error) {
 	value := os.Getenv(key)
 
 	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+		return 0, errors.New(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
 	}
 
 	intValue, err := strconv.Atoi(value)
 	if err != nil {
-		log.Fatalf(EnvironmentPrefixMsg+key+" must be a valid integer: %v", err)
+		return 0, errors.New(EnvironmentPrefixMsg + key + " must be a valid integer: " + err.Error())
 	}
 
-	return intValue
+	return intValue, nil
 }
 
-func mustExistStringSlice(key string) []string {
+func mustExistStringSlice(key string) ([]string, error) {
 	value := os.Getenv(key)
 
 	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+		return nil, errors.New(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
 	}
 
-	return strings.Split(value, ",")
+	return strings.Split(value, ","), nil
 }
 
-func mustExistDuration(key string) time.Duration {
+func mustExistDuration(key string) (time.Duration, error) {
 	value := os.Getenv(key)
 
 	if value == "" {
-		log.Fatal(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
+		return 0, errors.New(EnvironmentPrefixMsg + key + EnvironmentSuffixMsg)
 	}
 
 	duration, err := time.ParseDuration(value)
 	if err != nil {
-		log.Fatalf(EnvironmentPrefixMsg+key+" must be a valid duration: %v", err)
+		return 0, errors.New(EnvironmentPrefixMsg + key + " must be a valid duration: " + err.Error())
 	}
 
-	return duration
+	return duration, nil
+}
+
+func loadEnv() *Env { // nosonar
+	var err error
+	var errs []error
+
+	e := &Env{}
+
+	if e.GinMode, err = mustExistGoEnv("GIN_MODE"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.AppName, err = mustExistString("APP_NAME"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.ServerPort, err = mustExistString("SERVER_PORT"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.ServerTrustedProxies, err = mustExistStringSlice("SERVER_TRUSTED_PROXIES"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.TwitchClientID, err = mustExistString("TWITCH_CLIENT_ID"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.TwitchClientSecret, err = mustExistString("TWITCH_CLIENT_SECRET"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.TwitchClientRedirectURI, err = mustExistString("TWITCH_CLIENT_REDIRECT_URI"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.TwitchBroadcasterID, err = mustExistString("TWITCH_BROADCASTER_ID"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.TwitchBotUserID, err = mustExistString("TWITCH_BOT_USER_ID"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.TwitchBotUserName, err = mustExistString("TWITCH_BOT_USER_NAME"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.TwitchKeyWordToCallBot, err = mustExistString("TWITCH_KEY_WORD_TO_CALL_BOT"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.GroqAPIKey, err = mustExistString("GROQ_API_KEY"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.GroqModel, err = mustExistString("GROQ_MODEL"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.GroqModelFallback, err = mustExistString("GROQ_MODEL_FALLBACK"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.GroqMaxContextInput, err = mustExistInt("GROQ_MAX_CONTEXT_INPUT"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.ContextRequestDuration, err = mustExistDuration("CONTEXT_REQUEST_DURATION"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if len(errs) > 0 {
+		for _, err := range errs {
+			log.Println(err)
+		}
+
+		log.Fatal("Failed to load environment variables")
+	}
+
+	return e
 }
 
 func InitEnv() *Env {
@@ -114,24 +201,7 @@ func InitEnv() *Env {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	env = &Env{
-		GinMode:                 mustExistGoEnv("GIN_MODE"),
-		AppName:                 mustExistString("APP_NAME"),
-		ServerPort:              mustExistString("SERVER_PORT"),
-		ServerTrustedProxies:    mustExistStringSlice("SERVER_TRUSTED_PROXIES"),
-		TwitchClientID:          mustExistString("TWITCH_CLIENT_ID"),
-		TwitchClientSecret:      mustExistString("TWITCH_CLIENT_SECRET"),
-		TwitchClientRedirectURI: mustExistString("TWITCH_CLIENT_REDIRECT_URI"),
-		TwitchBroadcasterID:     mustExistString("TWITCH_BROADCASTER_ID"),
-		TwitchBotUserID:         mustExistString("TWITCH_BOT_USER_ID"),
-		TwitchBotUserName:       mustExistString("TWITCH_BOT_USER_NAME"),
-		TwitchKeyWordToCallBot:  mustExistString("TWITCH_KEY_WORD_TO_CALL_BOT"),
-		GroqAPIKey:              mustExistString("GROQ_API_KEY"),
-		GroqModel:               mustExistString("GROQ_MODEL"),
-		GroqModelFallback:       mustExistString("GROQ_MODEL_FALLBACK"),
-		GroqMaxContextInput:     mustExistInt("GROQ_MAX_CONTEXT_INPUT"),
-		ContextRequestDuration:  mustExistDuration("CONTEXT_REQUEST_DURATION"),
-	}
+	env = loadEnv()
 
 	log.Println("Environment variables initialized successfully")
 
@@ -139,24 +209,9 @@ func InitEnv() *Env {
 }
 
 func ReloadEnv() {
-	env = &Env{
-		GinMode:                 mustExistGoEnv("GIN_MODE"),
-		AppName:                 mustExistString("APP_NAME"),
-		ServerPort:              mustExistString("SERVER_PORT"),
-		ServerTrustedProxies:    mustExistStringSlice("SERVER_TRUSTED_PROXIES"),
-		TwitchClientID:          mustExistString("TWITCH_CLIENT_ID"),
-		TwitchClientSecret:      mustExistString("TWITCH_CLIENT_SECRET"),
-		TwitchClientRedirectURI: mustExistString("TWITCH_CLIENT_REDIRECT_URI"),
-		TwitchBroadcasterID:     mustExistString("TWITCH_BROADCASTER_ID"),
-		TwitchBotUserID:         mustExistString("TWITCH_BOT_USER_ID"),
-		TwitchBotUserName:       mustExistString("TWITCH_BOT_USER_NAME"),
-		TwitchKeyWordToCallBot:  mustExistString("TWITCH_KEY_WORD_TO_CALL_BOT"),
-		GroqAPIKey:              mustExistString("GROQ_API_KEY"),
-		GroqModel:               mustExistString("GROQ_MODEL"),
-		GroqModelFallback:       mustExistString("GROQ_MODEL_FALLBACK"),
-		GroqMaxContextInput:     mustExistInt("GROQ_MAX_CONTEXT_INPUT"),
-		ContextRequestDuration:  mustExistDuration("CONTEXT_REQUEST_DURATION"),
-	}
+	env = loadEnv()
+
+	log.Println("Environment variables reloaded successfully")
 }
 
 func GetEnv() *Env {
