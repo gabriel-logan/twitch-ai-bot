@@ -91,7 +91,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 	if len(conversation) == 0 {
 		systemTxt, err := helper.LoadFile("system_prompt.txt")
 		if err != nil {
-			log.Println("✖ Error loading system_prompt.txt:", err)
+			log.Println("✖ Error loading system_prompt.txt: ", err)
 			return
 		}
 
@@ -121,7 +121,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 
 		var data WSMessage
 		if err := json.Unmarshal(msg, &data); err != nil {
-			log.Println("json error:", err)
+			log.Println("json error: ", err)
 			continue
 		}
 
@@ -217,11 +217,11 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 func generateAIResponse(conversation []ai.RequestMessage, model, fallbackModel string, twitchMaxLength int, whoExecuted string) (string, error) {
 	response, err := ai.CallGroq(conversation, model)
 	if err != nil {
-		log.Println(whoExecuted+": primary model error:", err)
+		log.Println(whoExecuted+": primary model error: ", err)
 
 		responseFb, errFb := ai.CallGroq(conversation, fallbackModel)
 		if errFb != nil {
-			log.Println(whoExecuted+": fallback error:", errFb)
+			log.Println(whoExecuted+": fallback error: ", errFb)
 			return "", errFb
 		}
 
@@ -258,7 +258,7 @@ func registerEventSub(sessionID, eventSubType string) {
 
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
-		log.Println("json error:", err)
+		log.Println("json error: ", err)
 		return
 	}
 
@@ -266,7 +266,7 @@ func registerEventSub(sessionID, eventSubType string) {
 
 	req, err := http.NewRequest("POST", baseURL, bytes.NewBuffer(jsonBody))
 	if err != nil {
-		log.Println("eventsub error:", err)
+		log.Println("eventsub error: ", err)
 		return
 	}
 
@@ -279,20 +279,20 @@ func registerEventSub(sessionID, eventSubType string) {
 	clientHttp.Timeout = env.ContextRequestDuration
 	resp, err := clientHttp.Do(req)
 	if err != nil {
-		log.Println("eventsub error:", err)
+		log.Println("eventsub error: ", err)
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusAccepted {
-		log.Println("eventsub error:", resp.Status)
+		log.Println("eventsub error: ", resp.Status)
 
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			log.Println("eventsub error:", err)
+			log.Println("eventsub error: ", err)
 		}
 
-		log.Println("eventsub response:", string(bodyBytes))
+		log.Println("eventsub response: ", string(bodyBytes))
 		return
 	}
 
@@ -314,7 +314,7 @@ func sendMessage(message string) {
 
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
-		log.Println("json error:", err)
+		log.Println("json error: ", err)
 		return
 	}
 
@@ -322,7 +322,7 @@ func sendMessage(message string) {
 
 	req, err := http.NewRequest("POST", baseURL, bytes.NewBuffer(jsonBody))
 	if err != nil {
-		log.Println("send message error:", err)
+		log.Println("send message error: ", err)
 		return
 	}
 
@@ -333,20 +333,20 @@ func sendMessage(message string) {
 	clientHttp.Timeout = env.ContextRequestDuration
 	resp, err := clientHttp.Do(req)
 	if err != nil {
-		log.Println("send message error:", err)
+		log.Println("send message error: ", err)
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
-		log.Println("send message failed:", resp.Status)
+		log.Println("send message failed: ", resp.Status)
 
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			log.Println("error reading response body:", err)
+			log.Println("error reading response body: ", err)
 		}
 
-		log.Println("response body:", string(bodyBytes))
+		log.Println("response body: ", string(bodyBytes))
 
 		return
 	}
