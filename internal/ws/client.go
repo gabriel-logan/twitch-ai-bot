@@ -147,9 +147,9 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 			}
 
 			if data.Metadata.SubscriptionType == "channel.chat.message" {
-				msg := strings.ToLower(strings.TrimSpace(data.Payload.Event.Message.Text))
+				msg := strings.TrimSpace(data.Payload.Event.Message.Text)
 
-				if msg == "ping" {
+				if strings.ToLower(msg) == "ping" {
 					sendMessage("pong")
 				}
 
@@ -162,27 +162,10 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 						Content: msg,
 					})
 
-					response, err := ai.CallGroq(conversation, env.GroqModel)
+					response, err := generateAIResponse(conversation, env.GroqModel, env.GroqModelFallback, twitchMaxLength, "message")
 					if err != nil {
-						log.Println("message: primary model error:", err)
-
-						responseFb, errFb := ai.CallGroq(conversation, env.GroqModelFallback)
-						if errFb != nil {
-							log.Println("message: fallback error:", errFb)
-
-							sendMessage("Something went wrong!!!")
-
-							continue
-						}
-
-						response = responseFb
-					}
-
-					response = strings.TrimSpace(response)
-
-					responseRunes := []rune(response)
-					if len(responseRunes) > twitchMaxLength {
-						response = string(responseRunes[:twitchMaxLength])
+						sendMessage("Something went wrong!!!")
+						continue
 					}
 
 					conversation = append(conversation, ai.RequestMessage{
@@ -208,24 +191,9 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					Content: data.Payload.Event.SystemMessage + " Respond to the user based on this. More info if exists: " + data.Payload.Event.Message.Text,
 				})
 
-				response, err := ai.CallGroq(conversation, env.GroqModel)
+				response, err := generateAIResponse(conversation, env.GroqModel, env.GroqModelFallback, twitchMaxLength, "notification")
 				if err != nil {
-					log.Println("notification: primary model error:", err)
-
-					responseFb, errFb := ai.CallGroq(conversation, env.GroqModelFallback)
-					if errFb != nil {
-						log.Println("notification: fallback error:", errFb)
-						continue
-					}
-
-					response = responseFb
-				}
-
-				response = strings.TrimSpace(response)
-
-				responseRunes := []rune(response)
-				if len(responseRunes) > twitchMaxLength {
-					response = string(responseRunes[:twitchMaxLength])
+					continue
 				}
 
 				conversation = append(conversation, ai.RequestMessage{
@@ -244,6 +212,30 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 			}
 		}
 	}
+}
+
+func generateAIResponse(conversation []ai.RequestMessage, model, fallbackModel string, twitchMaxLength int, whoExecuted string) (string, error) {
+	response, err := ai.CallGroq(conversation, model)
+	if err != nil {
+		log.Println(whoExecuted+": primary model error:", err)
+
+		responseFb, errFb := ai.CallGroq(conversation, fallbackModel)
+		if errFb != nil {
+			log.Println(whoExecuted+": fallback error:", errFb)
+			return "", errFb
+		}
+
+		response = responseFb
+	}
+
+	response = strings.TrimSpace(response)
+
+	responseRunes := []rune(response)
+	if len(responseRunes) > twitchMaxLength {
+		response = string(responseRunes[:twitchMaxLength])
+	}
+
+	return response, nil
 }
 
 func registerEventSub(sessionID, eventSubType string) {
@@ -294,7 +286,13 @@ func registerEventSub(sessionID, eventSubType string) {
 
 	if resp.StatusCode != http.StatusAccepted {
 		log.Println("eventsub error:", resp.Status)
-		log.Println("eventsub response:", resp)
+
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Println("eventsub error:", err)
+		}
+
+		log.Println("eventsub response:", string(bodyBytes))
 		return
 	}
 
