@@ -23,7 +23,7 @@ type Request struct {
 
 type ResponseChoiceMessage struct {
 	Role    string  `json:"role"`
-	Content *string `json:"content"`
+	Content *string `json:"content"` // Optional - Groq returns string or null
 }
 
 type ResponseChoice struct {
@@ -35,13 +35,12 @@ type Response struct {
 	Choices []ResponseChoice `json:"choices"`
 }
 
-func CallGroq(messages []RequestMessage) (string, error) {
+func CallGroq(messages []RequestMessage, model string) (string, error) {
 	const url = "https://api.groq.com/openai/v1/chat/completions"
 
 	env := config.GetEnv()
 
 	apiKey := env.GroqAPIKey
-	model := env.GroqModel
 
 	return CallGenericAI(messages, apiKey, model, url)
 }

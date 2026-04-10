@@ -162,12 +162,23 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 						Content: msg,
 					})
 
-					response, err := ai.CallGroq(conversation)
+					response, err := ai.CallGroq(conversation, env.GroqModel)
 					if err != nil {
-						log.Println("ai error:", err)
-						sendMessage("Something went wrong!!!")
-						continue
+						log.Println("message: primary model error:", err)
+
+						responseFb, errFb := ai.CallGroq(conversation, env.GroqModelFallback)
+						if errFb != nil {
+							log.Println("message: fallback error:", errFb)
+
+							sendMessage("Something went wrong!!!")
+
+							continue
+						}
+
+						response = responseFb
 					}
+
+					response = strings.TrimSpace(response)
 
 					responseRunes := []rune(response)
 					if len(responseRunes) > twitchMaxLength {
@@ -197,11 +208,20 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					Content: data.Payload.Event.SystemMessage + " Respond to the user based on this. More info if exists: " + data.Payload.Event.Message.Text,
 				})
 
-				response, err := ai.CallGroq(conversation)
+				response, err := ai.CallGroq(conversation, env.GroqModel)
 				if err != nil {
-					log.Println("ai error processing notification: ", err)
-					continue
+					log.Println("notification: primary model error:", err)
+
+					responseFb, errFb := ai.CallGroq(conversation, env.GroqModelFallback)
+					if errFb != nil {
+						log.Println("notification: fallback error:", errFb)
+						continue
+					}
+
+					response = responseFb
 				}
+
+				response = strings.TrimSpace(response)
 
 				responseRunes := []rune(response)
 				if len(responseRunes) > twitchMaxLength {

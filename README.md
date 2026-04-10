@@ -75,7 +75,8 @@ All configuration is done via the `.env` file:
 | `TWITCH_BOT_USER_NAME` | Login name of the bot account | `my_bot_user` |
 | `TWITCH_KEY_WORD_TO_CALL_BOT` | Keyword that triggers the bot | `jesus` |
 | `GROQ_API_KEY` | Groq API key | `gsk_...` |
-| `GROQ_MODEL` | Groq model to use (default provider) | `llama-3.3-70b-versatile` |
+| `GROQ_MODEL` | Groq model to use (default provider) | `openai/gpt-oss-120b` |
+| `GROQ_MODEL_FALLBACK` | Groq model to use (Fallback) (default provider) | `llama-3.3-70b-versatile` |
 | `GROQ_MAX_CONTEXT_INPUT` | Max messages kept in conversation context | `25` |
 | `CONTEXT_REQUEST_DURATION` | Maximum request timeout | `15s` |
 

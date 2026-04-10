@@ -27,7 +27,7 @@ type UserInfoData struct {
 	ViewCount       int    `json:"view_count"`
 }
 
-type UserInfo struct {
+type UsersInfo struct {
 	Data []UserInfoData `json:"data"`
 }
 
@@ -88,14 +88,14 @@ func GetTwitchUserInfo(c *gin.Context) {
 		return
 	}
 
-	var marshaledBody UserInfo
-	if err := json.NewDecoder(resp.Body).Decode(&marshaledBody); err != nil {
-		log.Printf("Error when trying to unmarshal response body: %v \n", err)
-		c.JSON(http.StatusInternalServerError, "Error when trying to unmarshal response body")
+	var usersInfo UsersInfo
+	if err := json.NewDecoder(resp.Body).Decode(&usersInfo); err != nil {
+		log.Printf("Error when trying to decode response: %v \n", err)
+		c.JSON(http.StatusInternalServerError, "Error when trying to decode response")
 		return
 	}
 
-	c.JSON(http.StatusOK, marshaledBody)
+	c.JSON(http.StatusOK, usersInfo)
 }
 
 func SetEnvironment(c *gin.Context) {

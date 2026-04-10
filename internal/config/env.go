@@ -27,6 +27,7 @@ type Env struct {
 	TwitchKeyWordToCallBot  string
 	GroqAPIKey              string
 	GroqModel               string
+	GroqModelFallback       string
 	GroqMaxContextInput     int
 	ContextRequestDuration  time.Duration
 }
@@ -127,6 +128,7 @@ func InitEnv() *Env {
 		TwitchKeyWordToCallBot:  mustExistString("TWITCH_KEY_WORD_TO_CALL_BOT"),
 		GroqAPIKey:              mustExistString("GROQ_API_KEY"),
 		GroqModel:               mustExistString("GROQ_MODEL"),
+		GroqModelFallback:       mustExistString("GROQ_MODEL_FALLBACK"),
 		GroqMaxContextInput:     mustExistInt("GROQ_MAX_CONTEXT_INPUT"),
 		ContextRequestDuration:  mustExistDuration("CONTEXT_REQUEST_DURATION"),
 	}
@@ -151,6 +153,7 @@ func ReloadEnv() {
 		TwitchKeyWordToCallBot:  mustExistString("TWITCH_KEY_WORD_TO_CALL_BOT"),
 		GroqAPIKey:              mustExistString("GROQ_API_KEY"),
 		GroqModel:               mustExistString("GROQ_MODEL"),
+		GroqModelFallback:       mustExistString("GROQ_MODEL_FALLBACK"),
 		GroqMaxContextInput:     mustExistInt("GROQ_MAX_CONTEXT_INPUT"),
 		ContextRequestDuration:  mustExistDuration("CONTEXT_REQUEST_DURATION"),
 	}
