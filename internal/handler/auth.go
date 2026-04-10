@@ -69,8 +69,6 @@ func SignOutTwitch(c *gin.Context) {
 
 	storage.ClearOauthToken()
 
-	storage.SetBotIsOn(false)
-
 	c.Redirect(http.StatusTemporaryRedirect, "/")
 }
 
