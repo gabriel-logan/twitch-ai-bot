@@ -7,14 +7,23 @@ import (
 	"github.com/gabriel-logan/twitch-ai-bot/internal/ai"
 )
 
-func generateAIResponse(conversation []ai.RequestMessage, apiKey, model, fallbackModel string, twitchMaxLength int, whoExecuted string) (string, error) {
-	response, err := ai.CallGroq(conversation, apiKey, model)
-	if err != nil {
-		log.Println(whoExecuted+": primary model error: ", err)
+type GenerateAIResponseArgs struct {
+	conversation    []ai.RequestMessage
+	apiKey          string
+	model           string
+	fallbackModel   string
+	twitchMaxLength int
+	whoExecuted     string
+}
 
-		responseFb, errFb := ai.CallGroq(conversation, apiKey, fallbackModel)
+func generateAIResponse(args GenerateAIResponseArgs) (string, error) {
+	response, err := ai.CallGroq(args.conversation, args.apiKey, args.model)
+	if err != nil {
+		log.Println(args.whoExecuted+": primary model error: ", err)
+
+		responseFb, errFb := ai.CallGroq(args.conversation, args.apiKey, args.fallbackModel)
 		if errFb != nil {
-			log.Println(whoExecuted+": fallback error: ", errFb)
+			log.Println(args.whoExecuted+": fallback error: ", errFb)
 			return "", errFb
 		}
 
@@ -24,8 +33,8 @@ func generateAIResponse(conversation []ai.RequestMessage, apiKey, model, fallbac
 	response = strings.TrimSpace(response)
 
 	responseRunes := []rune(response)
-	if len(responseRunes) > twitchMaxLength {
-		response = string(responseRunes[:twitchMaxLength])
+	if len(responseRunes) > args.twitchMaxLength {
+		response = string(responseRunes[:args.twitchMaxLength])
 	}
 
 	return response, nil

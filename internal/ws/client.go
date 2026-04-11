@@ -170,7 +170,14 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 						Content: msg,
 					})
 
-					response, err := generateAIResponse(conversation.BuildMessages(), env.GroqAPIKey, env.GroqModel, env.GroqModelFallback, twitchMaxLength, "message")
+					response, err := generateAIResponse(GenerateAIResponseArgs{
+						conversation:    conversation.BuildMessages(),
+						apiKey:          env.GroqAPIKey,
+						model:           env.GroqModel,
+						fallbackModel:   env.GroqModelFallback,
+						twitchMaxLength: twitchMaxLength,
+						whoExecuted:     "message",
+					})
 					if err != nil {
 						sendMessage("Something went wrong!!!")
 						continue
@@ -194,7 +201,14 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					Content: data.Payload.Event.SystemMessage + " Respond to the user based on this. More info if exists: " + data.Payload.Event.Message.Text,
 				})
 
-				response, err := generateAIResponse(conversation.BuildMessages(), env.GroqAPIKey, env.GroqModel, env.GroqModelFallback, twitchMaxLength, "notification")
+				response, err := generateAIResponse(GenerateAIResponseArgs{
+					conversation:    conversation.BuildMessages(),
+					apiKey:          env.GroqAPIKey,
+					model:           env.GroqModel,
+					fallbackModel:   env.GroqModelFallback,
+					twitchMaxLength: twitchMaxLength,
+					whoExecuted:     "notification",
+				})
 				if err != nil {
 					continue
 				}
