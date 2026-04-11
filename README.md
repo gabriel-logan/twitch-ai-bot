@@ -54,7 +54,46 @@ Or build a binary:
 
 ```bash
 make build
-./bin/twitch_ai_bot
+./bin/linux/twitch_ai_bot
+```
+
+## Pre-compiled Binaries
+
+Pre-built binaries for Linux, Windows, and macOS are available on the [Releases](https://github.com/gabriel-logan/twitch-ai-bot/releases) page.
+
+1. **Download the appropriate zip for your platform**:
+   - `linux.zip` - Linux amd64
+   - `windows.zip` - Windows amd64
+   - `darwin.zip` - macOS amd64
+
+2. **Extract the zip**:
+
+```bash
+# Linux
+unzip linux.zip
+cd linux
+
+# Windows (extract with your preferred tool)
+
+# macOS
+unzip darwin.zip
+cd darwin
+```
+
+3. **Configure environment variables**:
+
+Edit `.env` in the extracted folder with your credentials (see [Configuration](#configuration) below).
+
+Optionally, edit `system_prompt.txt` to customize the AI's personality and behavior.
+
+4. **Run the bot**:
+
+```bash
+# Linux/macOS
+./twitch_ai_bot
+
+# Windows
+twitch_ai_bot.exe
 ```
 
 ## Configuration
