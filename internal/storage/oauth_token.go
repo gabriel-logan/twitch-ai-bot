@@ -1,9 +1,6 @@
 package storage
 
-var (
-	OauthToken string
-	BotIsOn    bool
-)
+var OauthToken string
 
 func SetOauthToken(token string) {
 	OauthToken = token
@@ -15,12 +12,4 @@ func GetOauthToken() string {
 
 func ClearOauthToken() {
 	OauthToken = ""
-}
-
-func SetBotIsOn(isOn bool) {
-	BotIsOn = isOn
-}
-
-func GetBotIsOn() bool {
-	return BotIsOn
 }
