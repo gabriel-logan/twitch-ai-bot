@@ -173,8 +173,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					response, err := generateAIResponse(GenerateAIResponseArgs{
 						conversation:    conversation.BuildMessages(),
 						apiKey:          env.GroqAPIKey,
-						model:           env.GroqModel,
-						fallbackModel:   env.GroqModelFallback,
+						models:          env.GroqModels,
 						twitchMaxLength: twitchMaxLength,
 						whoExecuted:     "message",
 					})
@@ -204,8 +203,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 				response, err := generateAIResponse(GenerateAIResponseArgs{
 					conversation:    conversation.BuildMessages(),
 					apiKey:          env.GroqAPIKey,
-					model:           env.GroqModel,
-					fallbackModel:   env.GroqModelFallback,
+					models:          env.GroqModels,
 					twitchMaxLength: twitchMaxLength,
 					whoExecuted:     "notification",
 				})

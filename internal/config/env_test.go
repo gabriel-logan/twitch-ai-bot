@@ -452,11 +452,11 @@ func TestLoadEnv(t *testing.T) {
 		if e.GroqAPIKey != "test_groq_api_key" {
 			t.Errorf("GroqAPIKey = %v, want test_groq_api_key", e.GroqAPIKey)
 		}
-		if e.GroqModel != "mixtral-8x7b-32768" {
-			t.Errorf("GroqModel = %v, want mixtral-8x7b-32768", e.GroqModel)
+		if e.GroqModels[0] != "mixtral-8x7b-32768" {
+			t.Errorf("GroqModels 1 = %v, want mixtral-8x7b-32768", e.GroqModels[0])
 		}
-		if e.GroqModelFallback != "llama-3.3-70b-versatile" {
-			t.Errorf("GroqModelFallback = %v, want llama-3.3-70b-versatile", e.GroqModelFallback)
+		if e.GroqModels[1] != "openai-gpt-3.5-turbo-16k" {
+			t.Errorf("GroqModels 2 = %v, want openai-gpt-3.5-turbo-16k", e.GroqModels[1])
 		}
 		if e.GroqMaxContextInput != 1000 {
 			t.Errorf("GroqMaxContextInput = %v, want 1000", e.GroqMaxContextInput)
@@ -511,8 +511,7 @@ func setEnvVars() {
 	os.Setenv("TWITCH_BOT_USER_NAME", "testbot")
 	os.Setenv("TWITCH_KEY_WORD_TO_CALL_BOT", "!bot")
 	os.Setenv("GROQ_API_KEY", "test_groq_api_key")
-	os.Setenv("GROQ_MODEL", "mixtral-8x7b-32768")
-	os.Setenv("GROQ_MODEL_FALLBACK", "llama-3.3-70b-versatile")
+	os.Setenv("GROQ_MODELS", "mixtral-8x7b-32768,openai-gpt-3.5-turbo-16k")
 	os.Setenv("GROQ_MAX_CONTEXT_INPUT", "1000")
 	os.Setenv("CONTEXT_REQUEST_DURATION", "30s")
 }
@@ -530,8 +529,7 @@ func unsetAllEnvVars() {
 	os.Unsetenv("TWITCH_BOT_USER_NAME")
 	os.Unsetenv("TWITCH_KEY_WORD_TO_CALL_BOT")
 	os.Unsetenv("GROQ_API_KEY")
-	os.Unsetenv("GROQ_MODEL")
-	os.Unsetenv("GROQ_MODEL_FALLBACK")
+	os.Unsetenv("GROQ_MODELS")
 	os.Unsetenv("GROQ_MAX_CONTEXT_INPUT")
 	os.Unsetenv("CONTEXT_REQUEST_DURATION")
 }

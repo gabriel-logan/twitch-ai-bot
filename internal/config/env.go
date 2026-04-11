@@ -27,8 +27,7 @@ type Env struct {
 	TwitchBotUserName       string
 	TwitchKeyWordToCallBot  string
 	GroqAPIKey              string
-	GroqModel               string
-	GroqModelFallback       string
+	GroqModels              []string
 	GroqMaxContextInput     int
 	ContextRequestDuration  time.Duration
 }
@@ -168,11 +167,7 @@ func loadEnv() *Env { // nosonar
 		errs = append(errs, err)
 	}
 
-	if e.GroqModel, err = mustExistString("GROQ_MODEL"); err != nil {
-		errs = append(errs, err)
-	}
-
-	if e.GroqModelFallback, err = mustExistString("GROQ_MODEL_FALLBACK"); err != nil {
+	if e.GroqModels, err = mustExistStringSlice("GROQ_MODELS"); err != nil {
 		errs = append(errs, err)
 	}
 

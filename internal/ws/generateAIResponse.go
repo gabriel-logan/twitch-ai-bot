@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -10,32 +11,35 @@ import (
 type GenerateAIResponseArgs struct {
 	conversation    []ai.RequestMessage
 	apiKey          string
-	model           string
-	fallbackModel   string
+	models          []string
 	twitchMaxLength int
 	whoExecuted     string
 }
 
 func generateAIResponse(args GenerateAIResponseArgs) (string, error) {
-	response, err := ai.CallGroq(args.conversation, args.apiKey, args.model)
-	if err != nil {
-		log.Println(args.whoExecuted+": primary model error: ", err)
+	var lastErr error
 
-		responseFb, errFb := ai.CallGroq(args.conversation, args.apiKey, args.fallbackModel)
-		if errFb != nil {
-			log.Println(args.whoExecuted+": fallback error: ", errFb)
-			return "", errFb
+	if len(args.models) == 0 {
+		return "", fmt.Errorf("no models provided")
+	}
+
+	for i, model := range args.models {
+		response, err := ai.CallGroq(args.conversation, args.apiKey, model)
+		if err != nil {
+			log.Printf("%s: model %d (%s) error: %v\n", args.whoExecuted, i, model, err)
+			lastErr = err
+			continue
 		}
 
-		response = responseFb
+		response = strings.TrimSpace(response)
+
+		responseRunes := []rune(response)
+		if len(responseRunes) > args.twitchMaxLength {
+			response = string(responseRunes[:args.twitchMaxLength])
+		}
+
+		return response, nil
 	}
 
-	response = strings.TrimSpace(response)
-
-	responseRunes := []rune(response)
-	if len(responseRunes) > args.twitchMaxLength {
-		response = string(responseRunes[:args.twitchMaxLength])
-	}
-
-	return response, nil
+	return "", fmt.Errorf("all models failed, last error: %w", lastErr)
 }
