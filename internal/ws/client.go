@@ -87,6 +87,12 @@ func run(ctx context.Context, env *config.Env) {
 }
 
 func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { // nosonar
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("[PANIC RECOVER] listenTwitch: ", r)
+		}
+	}()
+
 	var sessionID string
 
 	systemTxt, err := helper.LoadFile("system_prompt.txt")
