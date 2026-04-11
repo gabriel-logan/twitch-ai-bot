@@ -274,7 +274,7 @@
 
         .btn-warning {
             background: linear-gradient(135deg, #ff9500, #e08500);
-            color: white;
+            color: #212529;
             box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
         }
 
@@ -411,7 +411,6 @@
             padding: 14px 16px;
             border-radius: var(--radius-md);
             font-size: 0.9rem;
-            margin-top: 16px;
         }
 
         .alert-warning {
@@ -491,6 +490,31 @@
             margin: 24px auto 0;
         }
 
+        .user-lookup-result {
+            min-height: 300px;
+            max-height: 600px;
+            font-size: 0.9rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            padding: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--twitch-purple-light);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 900px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -509,11 +533,8 @@
             }
 
             .user-lookup-result {
-                max-height: 400px;
-                font-size: 0.9rem;
-                background: var(--bg-primary);
-                border: 1px solid var(--border-default);
-                padding: 20px;
+                min-height: 250px;
+                max-height: 500px;
             }
 
             .grid.two-col {
@@ -540,6 +561,11 @@
 
             .grid.two-col {
                 grid-template-columns: 1fr;
+            }
+
+            .user-lookup-result {
+                min-height: 200px;
+                max-height: 400px;
             }
 
             .btn-group {
@@ -628,11 +654,6 @@
                     </div>
                 </div>
 
-                <div class="alert alert-warning">
-                    ⚠️ These changes are applied only at runtime (temporarily). To persist them, make sure to copy the
-                    values into your <code>.env</code> file.
-                </div>
-
                 <ul class="info-list mt-4">
                     <li>
                         <span class="label">Broadcaster ID</span>
@@ -671,8 +692,17 @@
 
                 <div class="alert alert-info mb-4">
                     To reflect any changes in system_prompt.txt, simply edit the file, save it, then shut down the bot
-                    and
-                    restart it; it will then load the new information from system_prompt.txt.
+                    and restart it; it will then load the new information from system_prompt.txt.
+                </div>
+
+                <div class="alert alert-info mb-4">
+                    To reset the settings to those defined in the .env file, simply restart the server. To reflect
+                    changes immediately, restart the bot.
+                </div>
+
+                <div class="alert alert-warning mb-4">
+                    ⚠️ These changes are applied only at runtime (temporarily). To persist them, make sure to copy the
+                    values into your <code>.env</code> file.
                 </div>
 
                 <div class="form-group">
@@ -793,11 +823,9 @@
                     const response = await fetch("/api/twitch/start-bot", { method: "POST" });
 
                     if (response.ok) {
-                        const data = await response.json();
                         setTimeout(() => {
                             location.reload();
                         }, 1500);
-                        alert(data);
                     }
                 } catch (err) {
                     console.error(err);
@@ -809,11 +837,9 @@
                     const response = await fetch("/api/twitch/stop-bot", { method: "POST" });
 
                     if (response.ok) {
-                        const data = await response.json();
                         setTimeout(() => {
                             location.reload();
                         }, 1500);
-                        alert(data);
                     }
                 } catch (err) {
                     console.error(err);
@@ -843,7 +869,7 @@
                 try {
                     resultEl.textContent = "Loading...";
                     resultEl.style.display = "block";
-                    resultEl.className = "result mt-4";
+                    resultEl.className = "result mt-4 user-lookup-result";
 
                     const res = await fetch(`/api/twitch/user-info?${params.toString()}`);
 
@@ -853,11 +879,11 @@
 
                     const data = await res.json();
                     resultEl.textContent = JSON.stringify(data, null, 2);
-                    resultEl.className = "result mt-4";
+                    resultEl.className = "result mt-4 user-lookup-result";
                 } catch (err) {
                     console.error(err);
                     resultEl.textContent = "Failed to fetch user(s)";
-                    resultEl.className = "result mt-4 error";
+                    resultEl.className = "result mt-4 error user-lookup-result";
                 }
             }
 
@@ -879,6 +905,10 @@
         </div>
         {{ end }}
     </div>
+
+    <footer class="footer">
+        Made by <a href="https://github.com/gabriel-logan" target="_blank">Gabriel Logan</a>
+    </footer>
 </body>
 
 </html>
