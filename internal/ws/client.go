@@ -125,7 +125,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 
 		var data WSMessage
 		if err := json.Unmarshal(msg, &data); err != nil {
-			log.Println("json error: ", err)
+			log.Println("Failed to unmarshal WS message: ", err)
 			continue
 		}
 
@@ -300,7 +300,7 @@ func registerEventSub(sessionID, eventSubType string) {
 
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
-		log.Println("json error: ", err)
+		log.Println("[registerEventSub] error marshaling request body: ", err)
 		return
 	}
 
@@ -308,7 +308,7 @@ func registerEventSub(sessionID, eventSubType string) {
 
 	req, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewReader(jsonBody))
 	if err != nil {
-		log.Println("eventsub error: ", err)
+		log.Println("[registerEventSub] error creating HTTP request: ", err)
 		return
 	}
 
@@ -316,28 +316,28 @@ func registerEventSub(sessionID, eventSubType string) {
 	req.Header.Set("Client-Id", env.TwitchClientID)
 	req.Header.Set("Content-Type", "application/json")
 
-	log.Printf("Registering eventsub type: %s \n", eventSubType)
+	log.Println("[registerEventSub] registering subscription type: ", eventSubType, " sessionID: ", sessionID)
 
 	resp, err := clientHttp.Do(req)
 	if err != nil {
-		log.Println("eventsub error: ", err)
+		log.Println("[registerEventSub] HTTP request failed: ", err)
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusAccepted {
-		log.Println("eventsub error: ", resp.Status)
+		log.Println("[registerEventSub] Twitch API returned status: ", resp.Status)
 
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			log.Println("eventsub error: ", err)
+			log.Println("[registerEventSub] error reading response body: ", err)
 		}
 
-		log.Println("eventsub response: ", string(bodyBytes))
+		log.Println("[registerEventSub] response body: ", string(bodyBytes))
 		return
 	}
 
-	log.Printf("EventSub '%s' - status: %v", eventSubType, resp.Status)
+	log.Println("[registerEventSub] subscription created successfully - type: ", eventSubType, " status: ", resp.Status)
 }
 
 func sendMessage(message string) {
@@ -353,7 +353,7 @@ func sendMessage(message string) {
 
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
-		log.Println("json error: ", err)
+		log.Println("[sendMessage] error marshaling request body: ", err)
 		return
 	}
 
@@ -361,7 +361,7 @@ func sendMessage(message string) {
 
 	req, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewReader(jsonBody))
 	if err != nil {
-		log.Println("send message error: ", err)
+		log.Println("[sendMessage] error creating HTTP request: ", err)
 		return
 	}
 
@@ -371,21 +371,20 @@ func sendMessage(message string) {
 
 	resp, err := clientHttp.Do(req)
 	if err != nil {
-		log.Println("send message error: ", err)
+		log.Println("[sendMessage] HTTP request failed: ", err)
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
-		log.Println("send message failed: ", resp.Status)
+		log.Println("[sendMessage] Twitch API returned status: ", resp.Status)
 
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			log.Println("error reading response body: ", err)
+			log.Println("[sendMessage] error reading response body: ", err)
 		}
 
-		log.Println("response body: ", string(bodyBytes))
-
+		log.Println("[sendMessage] response body: ", string(bodyBytes))
 		return
 	}
 }

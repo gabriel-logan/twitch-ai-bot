@@ -38,6 +38,12 @@ func generateAIResponse(args GenerateAIResponseArgs) (string, error) {
 			response = string(responseRunes[:args.twitchMaxLength])
 		}
 
+		if response == "" {
+			log.Printf("%s: model %d (%s) returned an empty response\n", args.whoExecuted, i, model)
+			lastErr = fmt.Errorf("empty response")
+			continue
+		}
+
 		return response, nil
 	}
 
