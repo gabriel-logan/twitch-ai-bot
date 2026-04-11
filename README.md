@@ -16,7 +16,7 @@ A Twitch chatbot powered by AI that listens to your channel's chat and responds 
 
 ## Prerequisites
 
-- Go 1.25 or higher
+- Go 1.25.5 or higher
 - A Twitch Developer Application ([create one here](https://dev.twitch.tv/console))
 - A Groq API key ([get one here](https://console.groq.com/keys))
 - A Twitch channel where the bot will operate
