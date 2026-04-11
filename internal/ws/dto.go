@@ -5,17 +5,30 @@ type WSMessageMetadata struct {
 	SubscriptionType string `json:"subscription_type"`
 }
 
+type WSMessagePayloadMessageFragment struct {
+	Type    string `json:"type"`
+	Text    string `json:"text"`
+	Mention *struct {
+		UserID    string `json:"user_id"`
+		UserLogin string `json:"user_login"`
+		UserName  string `json:"user_name"`
+	} `json:"mention"`
+}
+
+type WSMessagePayloadMessage struct {
+	Text      string                            `json:"text"`
+	Fragments []WSMessagePayloadMessageFragment `json:"fragments"`
+}
+
 type WSMessagePayload struct {
 	Session struct {
 		ID string `json:"id"`
 	} `json:"session"`
 	Event struct {
-		BroadcasterUserLogin string `json:"broadcaster_user_login"`
-		ChatterUserLogin     string `json:"chatter_user_login"`
-		SystemMessage        string `json:"system_message"`
-		Message              struct {
-			Text string `json:"text"`
-		} `json:"message"`
+		BroadcasterUserLogin string                  `json:"broadcaster_user_login"`
+		ChatterUserLogin     string                  `json:"chatter_user_login"`
+		SystemMessage        string                  `json:"system_message"`
+		Message              WSMessagePayloadMessage `json:"message"`
 	} `json:"event"`
 }
 

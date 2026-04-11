@@ -162,14 +162,19 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 			}
 
 			if data.Metadata.SubscriptionType == "channel.chat.message" {
-				msg := strings.TrimSpace(data.Payload.Event.Message.Text)
+				if data.Payload.Event.Message.Text == "" && len(data.Payload.Event.Message.Fragments) == 0 {
+					continue
+				}
 
-				if strings.ToLower(msg) == "ping" {
+				msg := strings.TrimSpace(data.Payload.Event.Message.Text)
+				msgLower := strings.ToLower(msg)
+
+				if msgLower == "ping" {
 					sendMessage("pong")
 					continue
 				}
 
-				if strings.Contains(strings.ToLower(msg), env.TwitchKeyWordToCallBot) {
+				if strings.Contains(msgLower, strings.ToLower(env.TwitchKeyWordToCallBot)) || hasMentionToBot(data.Payload.Event.Message.Fragments, env.TwitchBotUserName) {
 					user := data.Payload.Event.ChatterUserLogin
 
 					conversation.Add(ai.RequestMessage{
@@ -230,6 +235,18 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 			}
 		}
 	}
+}
+
+func hasMentionToBot(fragments []WSMessagePayloadMessageFragment, botUsername string) bool {
+	for _, f := range fragments {
+		if f.Mention != nil {
+			if strings.EqualFold(f.Mention.UserLogin, botUsername) {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 /**
