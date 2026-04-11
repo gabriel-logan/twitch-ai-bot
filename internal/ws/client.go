@@ -26,6 +26,7 @@ var (
 	}
 	ctx       context.Context
 	ctxcancel context.CancelFunc
+	// jokeRoutineStarted bool
 )
 
 func StartBot() {
@@ -146,6 +147,15 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 
 			storage.SetBotIsOn(true)
 
+			/**
+			Not working properly yet !!!
+
+			if env.TwitchTimeforTheBottoTellaJoke > 0 && !jokeRoutineStarted {
+				jokeRoutineStarted = true
+				go startJokeRoutine(ctx, env.TwitchTimeforTheBottoTellaJoke, initialSystemPrompt, env)
+			}
+			**/
+
 		case "notification":
 			if data.Payload.Event.ChatterUserLogin == env.TwitchBotUserName {
 				continue
@@ -221,6 +231,54 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 		}
 	}
 }
+
+/**
+func startJokeRoutine(ctx context.Context, interval time.Duration, initialSystemPrompt string, env *config.Env) {
+	localConversation := NewConversation(env.GroqMaxContextInput, ai.RequestMessage{
+		Role:    "system",
+		Name:    env.AppName,
+		Content: initialSystemPrompt,
+	})
+
+	localConversation.Add(ai.RequestMessage{
+		Role:    "user",
+		Content: "Tell a random joke for Twitch chat in the current chat language. Be creative and vary the joke every time.",
+	})
+
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			log.Println("Joke routine stopped")
+			return
+
+		case <-ticker.C:
+			log.Println("Sending automatic joke...: ", time.Now().Format(time.RFC3339))
+
+			response, err := generateAIResponse(GenerateAIResponseArgs{
+				conversation:    localConversation.BuildMessages(),
+				apiKey:          env.GroqAPIKey,
+				models:          env.GroqModels,
+				twitchMaxLength: env.TwitchChatMessageMaxLength,
+				whoExecuted:     "joke",
+			})
+			if err != nil {
+				continue
+			}
+
+			localConversation.Add(ai.RequestMessage{
+				Role:    "assistant",
+				Name:    env.TwitchKeyWordToCallBot,
+				Content: response,
+			})
+
+			sendMessage(response)
+		}
+	}
+}
+**/
 
 func registerEventSub(sessionID, eventSubType string) {
 	env := config.GetEnv()

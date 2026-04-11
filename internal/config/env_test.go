@@ -452,6 +452,9 @@ func TestLoadEnv(t *testing.T) {
 		if e.TwitchChatMessageMaxLength != 500 {
 			t.Errorf("TwitchChatMessageMaxLength = %v, want 500", e.TwitchChatMessageMaxLength)
 		}
+		if e.TwitchTimeforTheBottoTellaJoke != 30*time.Second {
+			t.Errorf("TwitchTimeforTheBottoTellaJoke = %v, want 30s", e.TwitchTimeforTheBottoTellaJoke)
+		}
 		if e.GroqAPIKey != "test_groq_api_key" {
 			t.Errorf("GroqAPIKey = %v, want test_groq_api_key", e.GroqAPIKey)
 		}
@@ -514,6 +517,7 @@ func setEnvVars() {
 	os.Setenv("TWITCH_BOT_USER_NAME", "testbot")
 	os.Setenv("TWITCH_KEY_WORD_TO_CALL_BOT", "!bot")
 	os.Setenv("TWITCH_CHAT_MESSAGE_MAX_LENGTH", "500")
+	os.Setenv("TWITCH_TIME_FOR_THE_BOT_TO_TELLA_JOKE", "30s")
 	os.Setenv("GROQ_API_KEY", "test_groq_api_key")
 	os.Setenv("GROQ_MODELS", "mixtral-8x7b-32768,openai-gpt-3.5-turbo-16k")
 	os.Setenv("GROQ_MAX_CONTEXT_INPUT", "1000")
@@ -533,6 +537,7 @@ func unsetAllEnvVars() {
 	os.Unsetenv("TWITCH_BOT_USER_NAME")
 	os.Unsetenv("TWITCH_KEY_WORD_TO_CALL_BOT")
 	os.Unsetenv("TWITCH_CHAT_MESSAGE_MAX_LENGTH")
+	os.Unsetenv("TWITCH_TIME_FOR_THE_BOT_TO_TELLA_JOKE")
 	os.Unsetenv("GROQ_API_KEY")
 	os.Unsetenv("GROQ_MODELS")
 	os.Unsetenv("GROQ_MAX_CONTEXT_INPUT")
