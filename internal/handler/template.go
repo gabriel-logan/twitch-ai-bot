@@ -22,6 +22,7 @@ func Index(c *gin.Context) {
 	currentTwitchBotUserID := env.TwitchBotUserID
 	currentTwitchBotUserName := env.TwitchBotUserName
 	currentTwitchKeyWordToCallBot := env.TwitchKeyWordToCallBot
+	currentTwitchChatMessageMaxLength := env.TwitchChatMessageMaxLength
 	currentGroqMaxContextInput := env.GroqMaxContextInput
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
@@ -29,10 +30,11 @@ func Index(c *gin.Context) {
 		"isLoggedIn": IsLoggedIn,
 		"isBotOn":    isBotOn,
 
-		"currentTwitchBroadcasterID":    currentTwitchBroadcasterID,
-		"currentTwitchBotUserID":        currentTwitchBotUserID,
-		"currentTwitchBotUserName":      currentTwitchBotUserName,
-		"currentTwitchKeyWordToCallBot": currentTwitchKeyWordToCallBot,
-		"currentGroqMaxContextInput":    currentGroqMaxContextInput,
+		"currentTwitchBroadcasterID":        currentTwitchBroadcasterID,
+		"currentTwitchBotUserID":            currentTwitchBotUserID,
+		"currentTwitchBotUserName":          currentTwitchBotUserName,
+		"currentTwitchKeyWordToCallBot":     currentTwitchKeyWordToCallBot,
+		"currentTwitchChatMessageMaxLength": currentTwitchChatMessageMaxLength,
+		"currentGroqMaxContextInput":        currentGroqMaxContextInput,
 	})
 }

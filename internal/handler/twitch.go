@@ -32,11 +32,12 @@ type UsersInfo struct {
 }
 
 type Environment struct {
-	TwitchBroadcasterID string `json:"twitch_broadcaster_id"`
-	TwitchBotUserID     string `json:"twitch_bot_user_id"`
-	TwitchBotUserName   string `json:"twitch_bot_user_name"`
-	TwitchKeyWordToCall string `json:"twitch_key_word_to_call"`
-	GroqMaxContextInput string `json:"groq_max_context_input"`
+	TwitchBroadcasterID        string `json:"twitch_broadcaster_id"`
+	TwitchBotUserID            string `json:"twitch_bot_user_id"`
+	TwitchBotUserName          string `json:"twitch_bot_user_name"`
+	TwitchKeyWordToCall        string `json:"twitch_key_word_to_call"`
+	TwitchChatMessageMaxLength string `json:"twitch_chat_message_max_length"`
+	GroqMaxContextInput        string `json:"groq_max_context_input"`
 }
 
 func GetTwitchUserInfo(c *gin.Context) {
@@ -101,11 +102,12 @@ func GetTwitchUserInfo(c *gin.Context) {
 
 func SetEnvironment(c *gin.Context) {
 	newEnv := Environment{
-		TwitchBroadcasterID: c.Query("twitch_broadcaster_id"),
-		TwitchBotUserID:     c.Query("twitch_bot_user_id"),
-		TwitchBotUserName:   c.Query("twitch_bot_user_name"),
-		TwitchKeyWordToCall: c.Query("twitch_key_word_to_call"),
-		GroqMaxContextInput: c.Query("groq_max_context_input"),
+		TwitchBroadcasterID:        c.Query("twitch_broadcaster_id"),
+		TwitchBotUserID:            c.Query("twitch_bot_user_id"),
+		TwitchBotUserName:          c.Query("twitch_bot_user_name"),
+		TwitchKeyWordToCall:        c.Query("twitch_key_word_to_call"),
+		TwitchChatMessageMaxLength: c.Query("twitch_chat_message_max_length"),
+		GroqMaxContextInput:        c.Query("groq_max_context_input"),
 	}
 
 	if newEnv.TwitchBroadcasterID != "" {
@@ -132,6 +134,15 @@ func SetEnvironment(c *gin.Context) {
 
 	if newEnv.TwitchKeyWordToCall != "" {
 		os.Setenv("TWITCH_KEY_WORD_TO_CALL_BOT", newEnv.TwitchKeyWordToCall)
+	}
+
+	if newEnv.TwitchChatMessageMaxLength != "" {
+		if _, err := strconv.Atoi(newEnv.TwitchChatMessageMaxLength); err != nil {
+			c.JSON(http.StatusBadRequest, "Twitch chat message max length must be a valid integer")
+			return
+		}
+
+		os.Setenv("TWITCH_CHAT_MESSAGE_MAX_LENGTH", newEnv.TwitchChatMessageMaxLength)
 	}
 
 	if newEnv.GroqMaxContextInput != "" {

@@ -348,13 +348,16 @@
             </p>
 
             <p>
-                To reset the settings to those defined in the .env file, simply restart the server.
+                To reset the settings to those defined in the .env file, simply restart the server. To reflect changes
+                immediately, restart the bot.
             </p>
 
             <input type="number" id="broadcasterId" class="input" placeholder="Twitch Broadcaster ID" maxlength="50" />
             <input type="number" id="botUserId" class="input" placeholder="Twitch Bot User ID" maxlength="50" />
             <input type="text" id="botUserName" class="input" placeholder="Twitch Bot Username" maxlength="50" />
             <input type="text" id="keyword" class="input" placeholder="Keyword to call bot (ex: jesus)"
+                maxlength="50" />
+            <input type="number" id="chatMessageMaxLength" class="input" placeholder="Chat Message Max Length"
                 maxlength="50" />
             <input type="number" id="groqMaxContextInput" class="input" placeholder="Groq Max Context Input"
                 maxlength="50" />
@@ -380,6 +383,9 @@
                 <p>Current Twitch Key Word To Call Bot:
                     <span class="current-data">{{ .currentTwitchKeyWordToCallBot }}</span>
                 </p>
+                <p>Current Twitch Chat Message Max Length:
+                    <span class="current-data">{{ .currentTwitchChatMessageMaxLength }}</span>
+                </p>
                 <p>Current Groq Max Context Input:
                     <span class="current-data">{{ .currentGroqMaxContextInput }}</span>
                 </p>
@@ -396,6 +402,7 @@
                 const botUserId = document.getElementById("botUserId").value.trim()
                 const botUserName = document.getElementById("botUserName").value.trim()
                 const keyword = document.getElementById("keyword").value.trim()
+                const chatMessageMaxLength = document.getElementById("chatMessageMaxLength").value.trim()
                 const groqMaxContextInput = document.getElementById("groqMaxContextInput").value.trim()
                 const statusEl = document.getElementById("envStatus")
 
@@ -405,6 +412,7 @@
                 if (botUserId) params.append("twitch_bot_user_id", botUserId)
                 if (botUserName) params.append("twitch_bot_user_name", botUserName)
                 if (keyword) params.append("twitch_key_word_to_call", keyword)
+                if (chatMessageMaxLength) params.append("twitch_chat_message_max_length", chatMessageMaxLength)
                 if (groqMaxContextInput) params.append("groq_max_context_input", groqMaxContextInput)
 
                 if ([...params.keys()].length === 0) {
