@@ -29,6 +29,12 @@ jobs:
       - name: Build all (Makefile)
         run: make build
 
+      - name: Run tests
+        run: make test
+
+      - name: Run race tests
+        run: make test_race
+
       - name: Zip artifacts
         run: |
           cd bin
