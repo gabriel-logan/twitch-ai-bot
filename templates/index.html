@@ -337,6 +337,16 @@
                 Configure Bot Environment
             </h3>
 
+            <p>
+                To reflect any changes in system_prompt.txt, simply edit the file, save it, then shut down the bot and
+                restart it; it will then load the new information from system_prompt.txt.
+            </p>
+
+            <p>
+                To reset the settings to those defined in the .env file, simply restart the server. To reflect changes
+                immediately, restart the bot.
+            </p>
+
             <p style="
                 color: var(--text-secondary);
                 font-size: 0.85rem;
@@ -345,16 +355,6 @@
             ">
                 ⚠️ These changes are applied only at runtime (temporarily).
                 To persist them, make sure to copy the values into your <code>.env</code> file.
-            </p>
-
-            <p>
-                To reset the settings to those defined in the .env file, simply restart the server. To reflect changes
-                immediately, restart the bot.
-            </p>
-
-            <p>
-                To reflect any changes in system_prompt.txt, simply edit the file, save it, then shut down the bot and
-                restart it; it will then load the new information from system_prompt.txt.
             </p>
 
             <input type="number" id="broadcasterId" class="input" placeholder="Twitch Broadcaster ID" maxlength="50" />
