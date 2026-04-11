@@ -1,0 +1,45 @@
+name: Go - Build Release Binaries
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      - name: Clean
+        run: make clean
+
+      - name: Create base .env
+        run: cp .env.example .env
+
+      - name: Build all (Makefile)
+        run: make build
+
+      - name: Zip artifacts
+        run: |
+          cd bin
+          for dir in linux windows darwin; do
+            zip -r ${dir}.zip ${dir}
+          done
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            bin/linux.zip
+            bin/windows.zip
+            bin/darwin.zip
