@@ -18,54 +18,96 @@
 
         :root {
             --twitch-purple: #9146ff;
+            --twitch-purple-dark: #772ce8;
+            --twitch-purple-light: #bf94ff;
             --twitch-orange: #ff6b5a;
-            --twitch-dark: #772ce8;
-            --twitch-light: #bf94ff;
-            --bg-gradient-start: #0e0e10;
-            --bg-gradient-end: #1f1f23;
-            --card-bg: #18181b;
-            --card-border: #2f2f35;
+            --bg-primary: #0e0e10;
+            --bg-secondary: #18181b;
+            --bg-tertiary: #1f1f23;
+            --bg-elevated: #252529;
+            --border-subtle: #2f2f35;
+            --border-default: #3a3a44;
             --text-primary: #efeff1;
             --text-secondary: #adadb8;
-            --input-bg: #1f1f23;
-            --input-border: #3a3a44;
-            --danger: #e74c3c;
-            --danger-hover: #ff6b5a;
+            --text-muted: #7a7a8c;
             --success: #00fa9a;
+            --success-bg: rgba(0, 250, 154, 0.08);
+            --success-border: rgba(0, 250, 154, 0.25);
+            --danger: #e73c5a;
+            --danger-bg: rgba(231, 76, 90, 0.08);
+            --danger-border: rgba(231, 76, 90, 0.25);
+            --warning-bg: rgba(255, 193, 7, 0.08);
+            --warning-border: rgba(255, 193, 7, 0.25);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 40px rgba(145, 70, 255, 0.15);
         }
 
         body {
-            margin: 0;
-            padding: 20px;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .two-col {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .card-group {
+            display: contents;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--twitch-purple), var(--twitch-purple-dark));
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(145, 70, 255, 0.3);
         }
 
-        .container {
-            background: var(--card-bg);
-            padding: 32px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 600px;
-            border: 1px solid var(--card-border);
-        }
-
-        h1 {
-            margin-bottom: 8px;
-            color: var(--text-primary);
+        .header h1 {
             font-size: 1.75rem;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
 
-        p {
-            margin-bottom: 24px;
+        .header p {
             color: var(--text-secondary);
             font-size: 0.95rem;
         }
@@ -73,24 +115,35 @@
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
             font-weight: 500;
-            margin-bottom: 20px;
         }
 
         .status-badge.logged-in {
-            background: rgba(0, 250, 154, 0.1);
+            background: var(--success-bg);
             color: var(--success);
-            border: 1px solid rgba(0, 250, 154, 0.3);
+            border: 1px solid var(--success-border);
         }
 
         .status-badge.logged-out {
-            background: rgba(231, 76, 60, 0.1);
+            background: var(--danger-bg);
             color: var(--danger);
-            border: 1px solid rgba(231, 76, 60, 0.3);
+            border: 1px solid var(--danger-border);
+        }
+
+        .status-badge.bot-on {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1px solid var(--success-border);
+        }
+
+        .status-badge.bot-off {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
         }
 
         .status-dot {
@@ -98,102 +151,200 @@
             height: 8px;
             border-radius: 50%;
             background: currentColor;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-title-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .card-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 20px 0;
         }
 
         .btn {
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             padding: 14px 20px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: white;
+            border-radius: var(--radius-md);
             font-weight: 600;
             font-size: 0.95rem;
-            transition: all 0.2s ease;
-            width: 100%;
+            text-decoration: none;
             border: none;
             cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
         }
 
-        .active_bot {
-            background: linear-gradient(135deg, var(--twitch-light), var(--twitch-orange));
-            box-shadow: 0 4px 15px rgba(145, 70, 255, 0.3);
-            margin-top: 12px;
-        }
-
-        .login {
-            background: linear-gradient(135deg, var(--twitch-purple), var(--twitch-dark));
+        .btn-primary {
+            background: linear-gradient(135deg, var(--twitch-purple), var(--twitch-purple-dark));
+            color: white;
             box-shadow: 0 4px 15px rgba(145, 70, 255, 0.3);
         }
 
-        .login:hover {
-            background: linear-gradient(135deg, var(--twitch-light), var(--twitch-purple));
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--twitch-purple-light), var(--twitch-purple));
             box-shadow: 0 6px 20px rgba(145, 70, 255, 0.4);
             transform: translateY(-2px);
         }
 
-        .logout {
-            background: linear-gradient(135deg, var(--danger), #c0392b);
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c03950);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 90, 0.25);
         }
 
-        .logout:hover {
-            background: linear-gradient(135deg, var(--danger-hover), var(--danger));
-            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #ff4d6a, var(--danger));
+            box-shadow: 0 6px 20px rgba(231, 76, 90, 0.35);
             transform: translateY(-2px);
         }
 
-        .btn-start {
-            background: linear-gradient(135deg, #00fa9a, #00d68f);
-            color: #0e0e10;
-            box-shadow: 0 4px 15px rgba(0, 250, 154, 0.2);
-            margin-top: 12px;
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #00d68f);
+            color: var(--bg-primary);
+            box-shadow: 0 4px 15px rgba(0, 250, 154, 0.25);
         }
 
-        .btn-start:hover {
-            background: linear-gradient(135deg, #00d68f, #00b377);
-            box-shadow: 0 6px 20px rgba(0, 250, 154, 0.3);
+        .btn-success:hover {
+            background: linear-gradient(135deg, #00ffaa, var(--success));
+            box-shadow: 0 6px 20px rgba(0, 250, 154, 0.35);
             transform: translateY(-2px);
         }
 
-        .divider {
-            height: 1px;
-            background: var(--card-border);
-            margin: 24px 0;
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-default);
         }
 
-        .search-box {
-            margin-top: 24px;
+        .btn-secondary:hover {
+            background: var(--bg-elevated);
+            border-color: var(--twitch-purple);
+            box-shadow: 0 4px 15px rgba(145, 70, 255, 0.2);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9500, #e08500);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #ffaa33, #ff9500);
+            box-shadow: 0 6px 20px rgba(255, 149, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
             display: flex;
-            flex-direction: column;
             gap: 12px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-group .input {
+            flex: 1;
+        }
+
+        .input-group .button {
+            width: auto;
+            white-space: nowrap;
         }
 
         .input {
             padding: 12px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--input-border);
-            width: 100%;
-            font-size: 0.95rem;
-            background: var(--input-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-default);
+            background: var(--bg-tertiary);
             color: var(--text-primary);
+            font-size: 0.95rem;
+            width: 100%;
             transition: all 0.2s ease;
         }
 
         .input::placeholder {
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
         .input:focus {
             outline: none;
             border-color: var(--twitch-purple);
-            box-shadow: 0 0 0 3px rgba(145, 70, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(145, 70, 255, 0.15);
         }
 
         .button {
-            padding: 12px 16px;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
             border: none;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--twitch-purple), var(--twitch-dark));
+            background: linear-gradient(135deg, var(--twitch-purple), var(--twitch-purple-dark));
             color: white;
             font-weight: 600;
             font-size: 0.95rem;
@@ -202,9 +353,9 @@
         }
 
         .button:hover {
-            background: linear-gradient(135deg, var(--twitch-light), var(--twitch-purple));
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, var(--twitch-purple-light), var(--twitch-purple));
             box-shadow: 0 4px 15px rgba(145, 70, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         .button:active {
@@ -212,24 +363,23 @@
         }
 
         .result {
-            margin-top: 16px;
-            text-align: left;
-            background: var(--input-bg);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
             padding: 16px;
-            border-radius: 10px;
-            max-height: 250px;
+            max-height: 200px;
             overflow: auto;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.8rem;
             color: var(--text-secondary);
-            border: 1px solid var(--input-border);
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.6;
         }
 
         .result::-webkit-scrollbar {
             width: 6px;
+            height: 6px;
         }
 
         .result::-webkit-scrollbar-track {
@@ -237,308 +387,496 @@
         }
 
         .result::-webkit-scrollbar-thumb {
-            background: var(--input-border);
+            background: var(--border-default);
             border-radius: 3px;
         }
 
         .result::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
+            background: var(--text-muted);
         }
 
-        .current-data-container p {
+        .result.success {
+            border-color: var(--success-border);
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .result.error {
+            border-color: var(--danger-border);
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
             font-size: 0.9rem;
-            word-break: break-all;
+            margin-top: 16px;
         }
 
-        @media (max-width: 768px) {
+        .alert-warning {
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            color: #ffc107;
+        }
+
+        .alert-info {
+            background: rgba(145, 70, 255, 0.08);
+            border: 1px solid rgba(145, 70, 255, 0.2);
+            color: var(--twitch-purple-light);
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.9rem;
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-list .label {
+            color: var(--text-secondary);
+        }
+
+        .info-list .value {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .mt-4 {
+            margin-top: 16px;
+        }
+
+        .mt-6 {
+            margin-top: 24px;
+        }
+
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+
+        .mb-6 {
+            margin-bottom: 24px;
+        }
+
+        .login-card {
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .login-card .btn {
+            max-width: 280px;
+            margin: 24px auto 0;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .card.full-width {
+                grid-column: 1 / -1;
+            }
+
+            .two-col {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .card-group {
+                display: contents;
+            }
+
+            .user-lookup-result {
+                max-height: 400px;
+                font-size: 0.9rem;
+                background: var(--bg-primary);
+                border: 1px solid var(--border-default);
+                padding: 20px;
+            }
+
+            .grid.two-col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
             body {
-                padding: 16px;
-                align-items: flex-start;
-                padding-top: 40px;
+                padding: 20px 16px;
             }
 
-            .container {
-                padding: 24px;
-                max-width: 100%;
+            .card {
+                padding: 20px;
             }
 
-            h1 {
+            .header h1 {
                 font-size: 1.5rem;
             }
-        }
 
-        @media (max-width: 480px) {
-            body {
-                padding: 12px;
-                padding-top: 24px;
+            .grid {
+                grid-template-columns: 1fr;
             }
 
-            .container {
-                padding: 20px;
-                border-radius: 12px;
+            .grid.two-col {
+                grid-template-columns: 1fr;
             }
 
-            h1 {
-                font-size: 1.35rem;
+            .btn-group {
+                flex-direction: column;
             }
 
-            p {
-                font-size: 0.9rem;
+            .input-group {
+                flex-direction: column;
             }
 
-            .btn {
-                padding: 12px 16px;
-                font-size: 0.9rem;
+            .input-group .button {
+                width: 100%;
             }
 
-            .input,
-            .button {
-                padding: 10px 14px;
-                font-size: 0.9rem;
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
             }
 
-            .result {
-                max-height: 180px;
-                font-size: 0.8rem;
-                padding: 12px;
+            .info-list li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .info-list .value {
+                width: 100%;
+                word-break: break-all;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>{{ .title }}</h1>
+    <div class="app">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🤖</div>
+                <h1>{{ .title }}</h1>
+            </div>
+        </header>
 
         {{ if .isLoggedIn }}
-        <p>You are logged in</p>
-        <p>Bot is {{ if .isBotOn }}ON{{ else }}OFF{{ end }}</p>
-        <a href="/api/auth/sign-out/twitch" class="btn logout">Logout</a>
+        <div class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-title-icon">👤</div>
+                        Session
+                    </div>
+                    <span class="status-badge logged-in">
+                        <span class="status-dot"></span>
+                        Logged In
+                    </span>
+                </div>
+                <div class="btn-group">
+                    <a href="/api/auth/sign-out/twitch" class="btn btn-danger">Logout</a>
+                </div>
+            </div>
 
-        {{ if .isBotOn }}
-        <button onclick="stopBot()" class="btn active_bot">Stop Bot</button>
-        {{ else }}
-        <button onclick="startBot()" class="btn btn-start">Start Bot</button>
-        {{ end }}
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-title-icon">⚡</div>
+                        Bot Control
+                    </div>
+                    <span class="status-badge {{ if .isBotOn }}bot-on{{ else }}bot-off{{ end }}">
+                        <span class="status-dot"></span>
+                        {{ if .isBotOn }}ON{{ else }}OFF{{ end }}
+                    </span>
+                </div>
+                <p class="text-muted mb-4">Start or stop the Twitch AI Bot</p>
+                {{ if .isBotOn }}
+                <button onclick="stopBot()" class="btn btn-warning">Stop Bot</button>
+                {{ else }}
+                <button onclick="startBot()" class="btn btn-success">Start Bot</button>
+                {{ end }}
+            </div>
 
-        <div class="search-box">
-            <input type="text" id="loginInput" class="input"
-                placeholder="Enter Twitch login (e.g. say_seven,sev7n_bot)" />
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-title-icon">📋</div>
+                        Current Settings
+                    </div>
+                </div>
 
-            <button onclick="fetchUser()" class="button">
-                Fetch User Info
-            </button>
+                <div class="alert alert-warning">
+                    ⚠️ These changes are applied only at runtime (temporarily). To persist them, make sure to copy the
+                    values into your <code>.env</code> file.
+                </div>
 
-            <pre id="result" class="result"></pre>
+                <ul class="info-list mt-4">
+                    <li>
+                        <span class="label">Broadcaster ID</span>
+                        <span class="value">{{ .currentTwitchBroadcasterID }}</span>
+                    </li>
+                    <li>
+                        <span class="label">Bot User ID</span>
+                        <span class="value">{{ .currentTwitchBotUserID }}</span>
+                    </li>
+                    <li>
+                        <span class="label">Bot Username</span>
+                        <span class="value">{{ .currentTwitchBotUserName }}</span>
+                    </li>
+                    <li>
+                        <span class="label">Keyword to Call Bot</span>
+                        <span class="value">{{ .currentTwitchKeyWordToCallBot }}</span>
+                    </li>
+                    <li>
+                        <span class="label">Chat Message Max Length</span>
+                        <span class="value">{{ .currentTwitchChatMessageMaxLength }}</span>
+                    </li>
+                    <li>
+                        <span class="label">Groq Max Context Input</span>
+                        <span class="value">{{ .currentGroqMaxContextInput }}</span>
+                    </li>
+                </ul>
+            </div>
 
-            <div class="divider"></div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-title-icon">⚙️</div>
+                        Configure Bot Environment
+                    </div>
+                </div>
 
-            <h3 style="color: var(--text-primary); margin-bottom: 10px;">
-                Configure Bot Environment
-            </h3>
+                <div class="alert alert-info mb-4">
+                    To reflect any changes in system_prompt.txt, simply edit the file, save it, then shut down the bot
+                    and
+                    restart it; it will then load the new information from system_prompt.txt.
+                </div>
 
-            <p>
-                To reflect any changes in system_prompt.txt, simply edit the file, save it, then shut down the bot and
-                restart it; it will then load the new information from system_prompt.txt.
-            </p>
+                <div class="form-group">
+                    <label class="form-label" for="broadcasterId">Twitch Broadcaster ID</label>
+                    <input type="number" id="broadcasterId" class="input" placeholder="Twitch Broadcaster ID"
+                        maxlength="50" />
+                </div>
 
-            <p>
-                To reset the settings to those defined in the .env file, simply restart the server. To reflect changes
-                immediately, restart the bot.
-            </p>
+                <div class="form-group">
+                    <label class="form-label" for="botUserId">Twitch Bot User ID</label>
+                    <input type="number" id="botUserId" class="input" placeholder="Twitch Bot User ID" maxlength="50" />
+                </div>
 
-            <p style="
-                color: var(--text-secondary);
-                font-size: 0.85rem;
-                margin-bottom: 12px;
-                line-height: 1.4;
-            ">
-                ⚠️ These changes are applied only at runtime (temporarily).
-                To persist them, make sure to copy the values into your <code>.env</code> file.
-            </p>
+                <div class="form-group">
+                    <label class="form-label" for="botUserName">Twitch Bot Username</label>
+                    <input type="text" id="botUserName" class="input" placeholder="Twitch Bot Username"
+                        maxlength="50" />
+                </div>
 
-            <input type="number" id="broadcasterId" class="input" placeholder="Twitch Broadcaster ID" maxlength="50" />
-            <input type="number" id="botUserId" class="input" placeholder="Twitch Bot User ID" maxlength="50" />
-            <input type="text" id="botUserName" class="input" placeholder="Twitch Bot Username" maxlength="50" />
-            <input type="text" id="keyword" class="input" placeholder="Keyword to call bot (ex: jesus)"
-                maxlength="50" />
-            <input type="number" id="chatMessageMaxLength" class="input" placeholder="Chat Message Max Length"
-                maxlength="50" />
-            <input type="number" id="groqMaxContextInput" class="input" placeholder="Groq Max Context Input"
-                maxlength="50" />
+                <div class="form-group">
+                    <label class="form-label" for="keyword">Keyword to Call Bot</label>
+                    <input type="text" id="keyword" class="input" placeholder="Keyword to call bot (ex: jesus)"
+                        maxlength="50" />
+                </div>
 
-            <button onclick="setEnvironment()" class="button">
-                Save Environment
-            </button>
+                <div class="grid two-col">
+                    <div class="form-group">
+                        <label class="form-label" for="chatMessageMaxLength">Chat Message Max Length</label>
+                        <input type="number" id="chatMessageMaxLength" class="input" placeholder="Max Length"
+                            maxlength="50" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="groqMaxContextInput">Groq Max Context Input</label>
+                        <input type="number" id="groqMaxContextInput" class="input" placeholder="Max Context"
+                            maxlength="50" />
+                    </div>
+                </div>
 
-            <div class="divider"></div>
+                <button onclick="setEnvironment()" class="btn btn-primary mt-4">Save Environment</button>
 
-            <div id="envStatus" class="result" style="display:none;"></div>
+                <div id="envStatus" class="result mt-4" style="display: none;"></div>
+            </div>
 
-            <div class="current-data-container">
-                <p>Current Twitch Broadcaster ID:
-                    <span class="current-data">{{ .currentTwitchBroadcasterID }}</span>
-                </p>
-                <p>Current Twitch Bot User ID:
-                    <span class="current-data">{{ .currentTwitchBotUserID }}</span>
-                </p>
-                <p>Current Twitch Bot User Name:
-                    <span class="current-data">{{ .currentTwitchBotUserName }}</span>
-                </p>
-                <p>Current Twitch Key Word To Call Bot:
-                    <span class="current-data">{{ .currentTwitchKeyWordToCallBot }}</span>
-                </p>
-                <p>Current Twitch Chat Message Max Length:
-                    <span class="current-data">{{ .currentTwitchChatMessageMaxLength }}</span>
-                </p>
-                <p>Current Groq Max Context Input:
-                    <span class="current-data">{{ .currentGroqMaxContextInput }}</span>
-                </p>
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-title-icon">🔍</div>
+                        User Lookup
+                    </div>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="loginInput" class="input"
+                        placeholder="Enter Twitch login (e.g. say_seven,sev7n_bot)" />
+                    <button onclick="fetchUser()" class="button">Fetch</button>
+                </div>
+                <pre id="result" class="result mt-4 user-lookup-result" style="display: none;"></pre>
             </div>
         </div>
 
         <script>
-            const resultEl = document.getElementById("result")
+            const resultEl = document.getElementById("result");
 
-            resultEl.style.display = "none"
+            resultEl.style.display = "none";
 
             async function setEnvironment() {
-                const broadcasterId = document.getElementById("broadcasterId").value.trim()
-                const botUserId = document.getElementById("botUserId").value.trim()
-                const botUserName = document.getElementById("botUserName").value.trim()
-                const keyword = document.getElementById("keyword").value.trim()
-                const chatMessageMaxLength = document.getElementById("chatMessageMaxLength").value.trim()
-                const groqMaxContextInput = document.getElementById("groqMaxContextInput").value.trim()
-                const statusEl = document.getElementById("envStatus")
+                const broadcasterId = document.getElementById("broadcasterId").value.trim();
+                const botUserId = document.getElementById("botUserId").value.trim();
+                const botUserName = document.getElementById("botUserName").value.trim();
+                const keyword = document.getElementById("keyword").value.trim();
+                const chatMessageMaxLength = document.getElementById("chatMessageMaxLength").value.trim();
+                const groqMaxContextInput = document.getElementById("groqMaxContextInput").value.trim();
+                const statusEl = document.getElementById("envStatus");
 
-                const params = new URLSearchParams()
+                const params = new URLSearchParams();
 
-                if (broadcasterId) params.append("twitch_broadcaster_id", broadcasterId)
-                if (botUserId) params.append("twitch_bot_user_id", botUserId)
-                if (botUserName) params.append("twitch_bot_user_name", botUserName)
-                if (keyword) params.append("twitch_key_word_to_call", keyword)
-                if (chatMessageMaxLength) params.append("twitch_chat_message_max_length", chatMessageMaxLength)
-                if (groqMaxContextInput) params.append("groq_max_context_input", groqMaxContextInput)
+                if (broadcasterId) params.append("twitch_broadcaster_id", broadcasterId);
+                if (botUserId) params.append("twitch_bot_user_id", botUserId);
+                if (botUserName) params.append("twitch_bot_user_name", botUserName);
+                if (keyword) params.append("twitch_key_word_to_call", keyword);
+                if (chatMessageMaxLength) params.append("twitch_chat_message_max_length", chatMessageMaxLength);
+                if (groqMaxContextInput) params.append("groq_max_context_input", groqMaxContextInput);
 
                 if ([...params.keys()].length === 0) {
-                    alert("Fill at least one field")
-                    return
+                    alert("Fill at least one field");
+                    return;
                 }
 
                 try {
-                    statusEl.style.display = "block"
-                    statusEl.textContent = "Saving..."
+                    statusEl.style.display = "block";
+                    statusEl.textContent = "Saving...";
+                    statusEl.className = "result mt-4";
 
                     const res = await fetch(`/api/twitch/set-environment?${params.toString()}`, {
                         method: "POST"
-                    })
+                    });
 
-                    const data = await res.json()
+                    const data = await res.json();
 
                     if (!res.ok) {
-                        throw new Error(data)
+                        throw new Error(data);
                     }
 
-                    statusEl.textContent = "✅ Environment updated successfully!"
+                    statusEl.textContent = "Environment updated successfully!";
+                    statusEl.className = "result mt-4 success";
 
                     setTimeout(() => {
-                        location.reload()
-                    }, 600)
+                        location.reload();
+                    }, 600);
                 } catch (err) {
-                    console.error(err)
-                    statusEl.textContent = "❌ Failed to update environment"
+                    console.error(err);
+                    statusEl.textContent = "Failed to update environment";
+                    statusEl.className = "result mt-4 error";
                 }
             }
 
             async function startBot() {
                 try {
-                    const response = await fetch("/api/twitch/start-bot", { method: "POST" })
+                    const response = await fetch("/api/twitch/start-bot", { method: "POST" });
 
                     if (response.ok) {
-                        const data = await response.json()
-
+                        const data = await response.json();
                         setTimeout(() => {
-                            location.reload()
-                        }, 1500)
-
-                        alert(data)
+                            location.reload();
+                        }, 1500);
+                        alert(data);
                     }
-
                 } catch (err) {
-                    console.error(err)
+                    console.error(err);
                 }
             }
 
             async function stopBot() {
                 try {
-                    const response = await fetch("/api/twitch/stop-bot", { method: "POST" })
+                    const response = await fetch("/api/twitch/stop-bot", { method: "POST" });
 
                     if (response.ok) {
-                        const data = await response.json()
-
+                        const data = await response.json();
                         setTimeout(() => {
-                            location.reload()
-                        }, 1500)
-
-                        alert(data)
+                            location.reload();
+                        }, 1500);
+                        alert(data);
                     }
-
                 } catch (err) {
-                    console.error(err)
+                    console.error(err);
                 }
             }
 
             async function fetchUser() {
-                const inputEl = document.getElementById("loginInput")
-
-                const input = inputEl.value.trim()
+                const inputEl = document.getElementById("loginInput");
+                const input = inputEl.value.trim();
 
                 if (!input) {
-                    alert("Please enter a login")
-                    return
+                    alert("Please enter a login");
+                    return;
                 }
 
                 const logins = input
                     .split(",")
                     .map(l => l.trim())
-                    .filter(Boolean)
+                    .filter(Boolean);
 
-                const params = new URLSearchParams()
+                const params = new URLSearchParams();
 
                 for (const login of logins) {
-                    params.append("login", login)
+                    params.append("login", login);
                 }
 
                 try {
-                    resultEl.textContent = "Loading..."
+                    resultEl.textContent = "Loading...";
+                    resultEl.style.display = "block";
+                    resultEl.className = "result mt-4";
 
-                    const res = await fetch(`/api/twitch/user-info?${params.toString()}`)
+                    const res = await fetch(`/api/twitch/user-info?${params.toString()}`);
 
                     if (!res.ok) {
-                        throw new Error(`HTTP ${res.status}`)
+                        throw new Error(`HTTP ${res.status}`);
                     }
 
-                    const data = await res.json()
-
-                    resultEl.textContent = JSON.stringify(data, null, 2)
-
-                    resultEl.style.display = "block"
+                    const data = await res.json();
+                    resultEl.textContent = JSON.stringify(data, null, 2);
+                    resultEl.className = "result mt-4";
                 } catch (err) {
-                    console.error(err)
-                    resultEl.textContent = "Failed to fetch user(s)"
+                    console.error(err);
+                    resultEl.textContent = "Failed to fetch user(s)";
+                    resultEl.className = "result mt-4 error";
                 }
             }
 
             document.getElementById("loginInput").addEventListener("keydown", (e) => {
                 if (e.key === "Enter") {
-                    fetchUser()
+                    fetchUser();
                 }
-            })
+            });
         </script>
 
         {{ else }}
-        <p>You are not logged in</p>
-        <a href="/api/auth/sign-in/twitch" class="btn login">Login with Twitch</a>
+        <div class="card login-card">
+            <div class="logo" style="justify-content: center;">
+                <div class="logo-icon">🤖</div>
+            </div>
+            <h2 style="margin-top: 20px; margin-bottom: 8px;">Welcome Back</h2>
+            <p class="text-muted">You are not logged in</p>
+            <a href="/api/auth/sign-in/twitch" class="btn btn-primary">Login with Twitch</a>
+        </div>
         {{ end }}
     </div>
 </body>
