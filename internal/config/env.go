@@ -15,21 +15,22 @@ const EnvironmentPrefixMsg = "Environment variable "
 const EnvironmentSuffixMsg = " is required."
 
 type Env struct {
-	GinMode                 string
-	AppName                 string
-	ServerPort              string
-	ServerTrustedProxies    []string
-	TwitchClientID          string
-	TwitchClientSecret      string
-	TwitchClientRedirectURI string
-	TwitchBroadcasterID     string
-	TwitchBotUserID         string
-	TwitchBotUserName       string
-	TwitchKeyWordToCallBot  string
-	GroqAPIKey              string
-	GroqModels              []string
-	GroqMaxContextInput     int
-	ContextRequestDuration  time.Duration
+	GinMode                    string
+	AppName                    string
+	ServerPort                 string
+	ServerTrustedProxies       []string
+	TwitchClientID             string
+	TwitchClientSecret         string
+	TwitchClientRedirectURI    string
+	TwitchBroadcasterID        string
+	TwitchBotUserID            string
+	TwitchBotUserName          string
+	TwitchKeyWordToCallBot     string
+	TwitchChatMessageMaxLength int
+	GroqAPIKey                 string
+	GroqModels                 []string
+	GroqMaxContextInput        int
+	ContextRequestDuration     time.Duration
 }
 
 var env *Env
@@ -160,6 +161,10 @@ func loadEnv() *Env { // nosonar
 	}
 
 	if e.TwitchKeyWordToCallBot, err = mustExistString("TWITCH_KEY_WORD_TO_CALL_BOT"); err != nil {
+		errs = append(errs, err)
+	}
+
+	if e.TwitchChatMessageMaxLength, err = mustExistInt("TWITCH_CHAT_MESSAGE_MAX_LENGTH"); err != nil {
 		errs = append(errs, err)
 	}
 

@@ -74,6 +74,7 @@ All configuration is done via the `.env` file:
 | `TWITCH_BOT_USER_ID` | Twitch ID of the bot account | `87654321` |
 | `TWITCH_BOT_USER_NAME` | Login name of the bot account | `my_bot_user` |
 | `TWITCH_KEY_WORD_TO_CALL_BOT` | Keyword that triggers the bot | `jesus` |
+| `TWITCH_CHAT_MESSAGE_MAX_LENGTH` | Twitch chat message max length | `500` |
 | `GROQ_API_KEY` | Groq API key | `gsk_...` |
 | `GROQ_MODELS` | Groq models to use - automatic fallback | `llama-3.3-70b-versatile,openai/gpt-oss-120b` |
 | `GROQ_MAX_CONTEXT_INPUT` | Max messages kept in conversation context - minimum is 5 | `25` |

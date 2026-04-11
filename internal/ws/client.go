@@ -29,6 +29,8 @@ var (
 )
 
 func StartBot() {
+	env := config.GetEnv()
+
 	ctx, ctxcancel = context.WithCancel(context.Background())
 
 	for {
@@ -36,7 +38,7 @@ func StartBot() {
 		case <-ctx.Done():
 			return
 		default:
-			run(ctx)
+			run(ctx, env)
 
 			if ctx.Err() != nil {
 				log.Println("Closing connection...: ", ctx.Err())
@@ -64,7 +66,7 @@ func StopBot() {
 	}
 }
 
-func run(ctx context.Context) {
+func run(ctx context.Context, env *config.Env) {
 	const twitchWS = "wss://eventsub.wss.twitch.tv/ws"
 
 	conn, response, err := websocket.DefaultDialer.Dial(twitchWS, nil)
@@ -80,14 +82,10 @@ func run(ctx context.Context) {
 		conn.Close()
 	}()
 
-	listenTwitch(ctx, conn)
+	listenTwitch(ctx, conn, env)
 }
 
-func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
-	env := config.GetEnv()
-
-	const twitchMaxLength = 500
-
+func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { // nosonar
 	var sessionID string
 
 	systemTxt, err := helper.LoadFile("system_prompt.txt")
@@ -174,7 +172,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 						conversation:    conversation.BuildMessages(),
 						apiKey:          env.GroqAPIKey,
 						models:          env.GroqModels,
-						twitchMaxLength: twitchMaxLength,
+						twitchMaxLength: env.TwitchChatMessageMaxLength,
 						whoExecuted:     "message",
 					})
 					if err != nil {
@@ -204,7 +202,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn) { // nosonar
 					conversation:    conversation.BuildMessages(),
 					apiKey:          env.GroqAPIKey,
 					models:          env.GroqModels,
-					twitchMaxLength: twitchMaxLength,
+					twitchMaxLength: env.TwitchChatMessageMaxLength,
 					whoExecuted:     "notification",
 				})
 				if err != nil {
