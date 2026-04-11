@@ -356,6 +356,8 @@
             <input type="text" id="botUserName" class="input" placeholder="Twitch Bot Username" maxlength="50" />
             <input type="text" id="keyword" class="input" placeholder="Keyword to call bot (ex: jesus)"
                 maxlength="50" />
+            <input type="number" id="groqMaxContextInput" class="input" placeholder="Groq Max Context Input"
+                maxlength="50" />
 
             <button onclick="setEnvironment()" class="button">
                 Save Environment
@@ -378,6 +380,9 @@
                 <p>Current Twitch Key Word To Call Bot:
                     <span class="current-data">{{ .currentTwitchKeyWordToCallBot }}</span>
                 </p>
+                <p>Current Groq Max Context Input:
+                    <span class="current-data">{{ .currentGroqMaxContextInput }}</span>
+                </p>
             </div>
         </div>
 
@@ -391,6 +396,7 @@
                 const botUserId = document.getElementById("botUserId").value.trim()
                 const botUserName = document.getElementById("botUserName").value.trim()
                 const keyword = document.getElementById("keyword").value.trim()
+                const groqMaxContextInput = document.getElementById("groqMaxContextInput").value.trim()
                 const statusEl = document.getElementById("envStatus")
 
                 const params = new URLSearchParams()
@@ -399,6 +405,7 @@
                 if (botUserId) params.append("twitch_bot_user_id", botUserId)
                 if (botUserName) params.append("twitch_bot_user_name", botUserName)
                 if (keyword) params.append("twitch_key_word_to_call", keyword)
+                if (groqMaxContextInput) params.append("groq_max_context_input", groqMaxContextInput)
 
                 if ([...params.keys()].length === 0) {
                     alert("Fill at least one field")

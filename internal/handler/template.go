@@ -22,6 +22,7 @@ func Index(c *gin.Context) {
 	currentTwitchBotUserID := env.TwitchBotUserID
 	currentTwitchBotUserName := env.TwitchBotUserName
 	currentTwitchKeyWordToCallBot := env.TwitchKeyWordToCallBot
+	currentGroqMaxContextInput := env.GroqMaxContextInput
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title":      env.AppName,
@@ -32,5 +33,6 @@ func Index(c *gin.Context) {
 		"currentTwitchBotUserID":        currentTwitchBotUserID,
 		"currentTwitchBotUserName":      currentTwitchBotUserName,
 		"currentTwitchKeyWordToCallBot": currentTwitchKeyWordToCallBot,
+		"currentGroqMaxContextInput":    currentGroqMaxContextInput,
 	})
 }

@@ -36,6 +36,7 @@ type Environment struct {
 	TwitchBotUserID     string `json:"twitch_bot_user_id"`
 	TwitchBotUserName   string `json:"twitch_bot_user_name"`
 	TwitchKeyWordToCall string `json:"twitch_key_word_to_call"`
+	GroqMaxContextInput string `json:"groq_max_context_input"`
 }
 
 func GetTwitchUserInfo(c *gin.Context) {
@@ -104,6 +105,7 @@ func SetEnvironment(c *gin.Context) {
 		TwitchBotUserID:     c.Query("twitch_bot_user_id"),
 		TwitchBotUserName:   c.Query("twitch_bot_user_name"),
 		TwitchKeyWordToCall: c.Query("twitch_key_word_to_call"),
+		GroqMaxContextInput: c.Query("groq_max_context_input"),
 	}
 
 	if newEnv.TwitchBroadcasterID != "" {
@@ -130,6 +132,15 @@ func SetEnvironment(c *gin.Context) {
 
 	if newEnv.TwitchKeyWordToCall != "" {
 		os.Setenv("TWITCH_KEY_WORD_TO_CALL_BOT", newEnv.TwitchKeyWordToCall)
+	}
+
+	if newEnv.GroqMaxContextInput != "" {
+		if _, err := strconv.Atoi(newEnv.GroqMaxContextInput); err != nil {
+			c.JSON(http.StatusBadRequest, "Groq max context input must be a valid integer")
+			return
+		}
+
+		os.Setenv("GROQ_MAX_CONTEXT_INPUT", newEnv.GroqMaxContextInput)
 	}
 
 	config.ReloadEnv()
