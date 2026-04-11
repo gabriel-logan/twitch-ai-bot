@@ -362,6 +362,45 @@
             transform: translateY(0);
         }
 
+        .btn:disabled,
+        .button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn .spinner {
+            width: 16px;
+            height: 16px;
+            border-color: rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+        }
+
+        .btn-success .spinner {
+            border-color: rgba(0, 0, 0, 0.3);
+            border-top-color: var(--bg-primary);
+        }
+
+        .btn-warning .spinner {
+            border-color: rgba(33, 37, 41, 0.3);
+            border-top-color: #212529;
+        }
+
         .result {
             background: var(--bg-tertiary);
             border: 1px solid var(--border-subtle);
@@ -639,11 +678,9 @@
                     </span>
                 </div>
                 <p class="text-muted mb-4">Start or stop the Twitch AI Bot</p>
-                {{ if .isBotOn }}
-                <button onclick="stopBot()" class="btn btn-warning">Stop Bot</button>
-                {{ else }}
-                <button onclick="startBot()" class="btn btn-success">Start Bot</button>
-                {{ end }}
+                <button id="botToggleBtn" class="btn {{ if .isBotOn }}btn-warning{{ else }}btn-success{{ end }}">
+                    {{ if .isBotOn }}Stop Bot{{ else }}Start Bot{{ end }}
+                </button>
             </div>
 
             <div class="card">
@@ -819,6 +856,10 @@
             }
 
             async function startBot() {
+                const btn = document.getElementById("botToggleBtn");
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> Starting...';
+
                 try {
                     const response = await fetch("/api/twitch/start-bot", { method: "POST" });
 
@@ -826,13 +867,22 @@
                         setTimeout(() => {
                             location.reload();
                         }, 1500);
+                    } else {
+                        btn.disabled = false;
+                        btn.innerHTML = 'Start Bot';
                     }
                 } catch (err) {
                     console.error(err);
+                    btn.disabled = false;
+                    btn.innerHTML = 'Start Bot';
                 }
             }
 
             async function stopBot() {
+                const btn = document.getElementById("botToggleBtn");
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> Stopping...';
+
                 try {
                     const response = await fetch("/api/twitch/stop-bot", { method: "POST" });
 
@@ -840,11 +890,25 @@
                         setTimeout(() => {
                             location.reload();
                         }, 1500);
+                    } else {
+                        btn.disabled = false;
+                        btn.innerHTML = 'Stop Bot';
                     }
                 } catch (err) {
                     console.error(err);
+                    btn.disabled = false;
+                    btn.innerHTML = 'Stop Bot';
                 }
             }
+
+            document.getElementById("botToggleBtn").addEventListener("click", function () {
+                const isRunning = this.textContent.includes("Stop");
+                if (isRunning) {
+                    stopBot();
+                } else {
+                    startBot();
+                }
+            });
 
             async function fetchUser() {
                 const inputEl = document.getElementById("loginInput");
