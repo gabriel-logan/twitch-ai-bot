@@ -1,0 +1,53 @@
+# How to Use
+
+## 1. Configure .env
+Edit the .env file with your credentials.
+
+Getting Twitch credentials:
+1. Go to https://dev.twitch.tv/console
+2. Create an application with OAuth Redirect URL: http://localhost:8080/api/auth/callback/twitch
+3. Copy Client ID and Client Secret to .env
+
+Getting Groq API key:
+1. Go to https://console.groq.com/keys
+2. Generate a new key and paste it into .env
+
+Note: You must pass at least 1 valid Groq model. You can pass multiple models separated by comma - the bot will use the first available one and automatically fall back to the next if needed.
+
+## 2. (Optional) Edit system_prompt.txt
+Edit the system_prompt.txt file to customize the bot's personality and behavior.
+
+## 3. Move the folder (Optional)
+You can move this folder to any location you prefer. For easy access, you can create a shortcut/symlink to your desktop.
+
+Linux/macOS example:
+```bash
+ln -s /path/to/folder ~/.local/bin/twitch_ai_bot
+```
+
+Windows: Right-click the folder → Send to → Desktop (create shortcut)
+
+## 4. Run
+```bash
+./twitch_ai_bot
+```
+
+Windows:
+```bash
+twitch_ai_bot.exe
+```
+
+## 5. Authenticate
+1. Open http://localhost:8080 (or http://YOUR_IP:8080) in your browser
+2. Click "Login with Twitch"
+3. Authorize the application
+
+Note: The application is accessible from your entire internal network. Replace localhost with your machine's IP address to access it from other devices.
+
+## 6. Use in chat
+Type the configured keyword followed by your message.
+
+Example:
+```
+jesus hello
+```
