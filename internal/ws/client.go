@@ -149,7 +149,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 			}
 
 			for _, eventSubType := range eventSubTypes {
-				go registerEventSub(sessionID, eventSubType)
+				go registerEventSub(sessionID, eventSubType, env)
 			}
 
 			storage.SetBotIsOn(true)
@@ -177,7 +177,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 				msgLower := strings.ToLower(msg)
 
 				if msgLower == "ping" {
-					sendMessage("pong")
+					sendMessage("pong", env)
 					continue
 				}
 
@@ -198,7 +198,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 						whoExecuted:     "message",
 					})
 					if err != nil {
-						sendMessage("Something went wrong!!!")
+						sendMessage("Something went wrong!!!", env)
 						continue
 					}
 
@@ -208,7 +208,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 						Content: response,
 					})
 
-					sendMessage(response)
+					sendMessage(response, env)
 					continue
 				}
 			}
@@ -237,7 +237,7 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 					Content: response,
 				})
 
-				sendMessage(response)
+				sendMessage(response, env)
 				continue
 			}
 		}

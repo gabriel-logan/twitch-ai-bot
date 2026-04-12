@@ -11,9 +11,7 @@ import (
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
 )
 
-func registerEventSub(sessionID, eventSubType string) {
-	env := config.GetEnv()
-
+func registerEventSub(sessionID, eventSubType string, env *config.Env) {
 	token := storage.GetOauthToken()
 
 	body := EventSubRequest{
@@ -71,9 +69,7 @@ func registerEventSub(sessionID, eventSubType string) {
 	log.Println("[registerEventSub] subscription created successfully - type: ", eventSubType, " status: ", resp.Status)
 }
 
-func sendMessage(message string) {
-	env := config.GetEnv()
-
+func sendMessage(message string, env *config.Env) {
 	token := storage.GetOauthToken()
 
 	body := SendMessageRequest{
