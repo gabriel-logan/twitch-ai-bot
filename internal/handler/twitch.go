@@ -31,13 +31,13 @@ type UsersInfo struct {
 	Data []UserInfoData `json:"data"`
 }
 
-type Environment struct {
-	TwitchBroadcasterID        string `json:"twitch_broadcaster_id"`
-	TwitchBotUserID            string `json:"twitch_bot_user_id"`
-	TwitchBotUserName          string `json:"twitch_bot_user_name"`
-	TwitchKeyWordToCall        string `json:"twitch_key_word_to_call"`
-	TwitchChatMessageMaxLength string `json:"twitch_chat_message_max_length"`
-	GroqMaxContextInput        string `json:"groq_max_context_input"`
+type EnvironmentInput struct {
+	TwitchBroadcasterID        int    `form:"twitch_broadcaster_id"`
+	TwitchBotUserID            int    `form:"twitch_bot_user_id"`
+	TwitchBotUserName          string `form:"twitch_bot_user_name"`
+	TwitchKeyWordToCall        string `form:"twitch_key_word_to_call"`
+	TwitchChatMessageMaxLength int    `form:"twitch_chat_message_max_length"`
+	GroqMaxContextInput        int    `form:"groq_max_context_input"`
 }
 
 func GetTwitchUserInfo(c *gin.Context) {
@@ -101,57 +101,48 @@ func GetTwitchUserInfo(c *gin.Context) {
 }
 
 func SetEnvironment(c *gin.Context) {
-	newEnv := Environment{
-		TwitchBroadcasterID:        c.Query("twitch_broadcaster_id"),
-		TwitchBotUserID:            c.Query("twitch_bot_user_id"),
-		TwitchBotUserName:          c.Query("twitch_bot_user_name"),
-		TwitchKeyWordToCall:        c.Query("twitch_key_word_to_call"),
-		TwitchChatMessageMaxLength: c.Query("twitch_chat_message_max_length"),
-		GroqMaxContextInput:        c.Query("groq_max_context_input"),
+	var newEnv EnvironmentInput
+	if err := c.ShouldBindQuery(&newEnv); err != nil {
+		log.Printf("Error when trying to bind query: %v \n", err)
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
 	}
 
-	if newEnv.TwitchBroadcasterID != "" {
-		if _, err := strconv.Atoi(newEnv.TwitchBroadcasterID); err != nil {
-			c.JSON(http.StatusBadRequest, "Twitch broadcaster id must be a valid integer")
-			return
-		}
+	var somethingChanged bool
 
-		os.Setenv("TWITCH_BROADCASTER_ID", newEnv.TwitchBroadcasterID)
+	if newEnv.TwitchBroadcasterID != 0 {
+		os.Setenv("TWITCH_BROADCASTER_ID", strconv.Itoa(newEnv.TwitchBroadcasterID))
+		somethingChanged = true
 	}
 
-	if newEnv.TwitchBotUserID != "" {
-		if _, err := strconv.Atoi(newEnv.TwitchBotUserID); err != nil {
-			c.JSON(http.StatusBadRequest, "Twitch bot user id must be a valid integer")
-			return
-		}
-
-		os.Setenv("TWITCH_BOT_USER_ID", newEnv.TwitchBotUserID)
+	if newEnv.TwitchBotUserID != 0 {
+		os.Setenv("TWITCH_BOT_USER_ID", strconv.Itoa(newEnv.TwitchBotUserID))
+		somethingChanged = true
 	}
 
 	if newEnv.TwitchBotUserName != "" {
 		os.Setenv("TWITCH_BOT_USER_NAME", newEnv.TwitchBotUserName)
+		somethingChanged = true
 	}
 
 	if newEnv.TwitchKeyWordToCall != "" {
 		os.Setenv("TWITCH_KEY_WORD_TO_CALL_BOT", newEnv.TwitchKeyWordToCall)
+		somethingChanged = true
 	}
 
-	if newEnv.TwitchChatMessageMaxLength != "" {
-		if _, err := strconv.Atoi(newEnv.TwitchChatMessageMaxLength); err != nil {
-			c.JSON(http.StatusBadRequest, "Twitch chat message max length must be a valid integer")
-			return
-		}
-
-		os.Setenv("TWITCH_CHAT_MESSAGE_MAX_LENGTH", newEnv.TwitchChatMessageMaxLength)
+	if newEnv.TwitchChatMessageMaxLength != 0 {
+		os.Setenv("TWITCH_CHAT_MESSAGE_MAX_LENGTH", strconv.Itoa(newEnv.TwitchChatMessageMaxLength))
+		somethingChanged = true
 	}
 
-	if newEnv.GroqMaxContextInput != "" {
-		if _, err := strconv.Atoi(newEnv.GroqMaxContextInput); err != nil {
-			c.JSON(http.StatusBadRequest, "Groq max context input must be a valid integer")
-			return
-		}
+	if newEnv.GroqMaxContextInput != 0 {
+		os.Setenv("GROQ_MAX_CONTEXT_INPUT", strconv.Itoa(newEnv.GroqMaxContextInput))
+		somethingChanged = true
+	}
 
-		os.Setenv("GROQ_MAX_CONTEXT_INPUT", newEnv.GroqMaxContextInput)
+	if !somethingChanged {
+		c.JSON(http.StatusOK, "Environment already set")
+		return
 	}
 
 	config.ReloadEnv()
