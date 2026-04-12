@@ -19,7 +19,10 @@ var (
 	clientHttp = &http.Client{
 		Timeout: 12 * time.Second,
 		Transport: &http.Transport{
-			MaxIdleConnsPerHost: 20,
+			MaxIdleConnsPerHost: 100,
+			MaxIdleConns:        100,
+			IdleConnTimeout:     90 * time.Second,
+			MaxConnsPerHost:     100,
 		},
 	}
 	ctx       context.Context
