@@ -169,11 +169,12 @@ func listenTwitch(ctx context.Context, conn *websocket.Conn, env *config.Env) { 
 			}
 
 			if data.Metadata.SubscriptionType == "channel.chat.message" {
-				if data.Payload.Event.Message.Text == "" && len(data.Payload.Event.Message.Fragments) == 0 {
+				msg := strings.TrimSpace(data.Payload.Event.Message.Text)
+
+				if msg == "" && len(data.Payload.Event.Message.Fragments) == 0 {
 					continue
 				}
 
-				msg := strings.TrimSpace(data.Payload.Event.Message.Text)
 				msgLower := strings.ToLower(msg)
 
 				if msgLower == "ping" {
