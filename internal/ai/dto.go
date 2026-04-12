@@ -13,7 +13,7 @@ type Request struct {
 
 type ResponseChoiceMessage struct {
 	Role    string  `json:"role"`
-	Content *string `json:"content"` // Optional - Groq returns string or null
+	Content string `json:"content"` // Optional - Groq returns string or null
 }
 
 type ResponseChoice struct {

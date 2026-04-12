@@ -72,9 +72,9 @@ func CallGenericAI(messages []RequestMessage, apiKey, model, url string) (string
 
 	msg := result.Choices[0].Message.Content
 
-	if msg == nil {
-		return "", errors.New("No content returned from API - nil")
+	if msg == "" {
+		return "", errors.New("No content returned from API - empty")
 	}
 
-	return *msg, nil
+	return msg, nil
 }

@@ -8,11 +8,11 @@ type WSMessageMetadata struct {
 type WSMessagePayloadMessageFragment struct {
 	Type    string `json:"type"`
 	Text    string `json:"text"`
-	Mention *struct {
+	Mention struct {
 		UserID    string `json:"user_id"`
 		UserLogin string `json:"user_login"`
 		UserName  string `json:"user_name"`
-	} `json:"mention"`
+	} `json:"mention"` // Optional - returns null if no mention
 }
 
 type WSMessagePayloadMessage struct {
