@@ -37,7 +37,7 @@ type EnvironmentInput struct {
 	TwitchBotUserName          string `form:"twitch_bot_user_name"`
 	TwitchKeyWordToCall        string `form:"twitch_key_word_to_call"`
 	TwitchChatMessageMaxLength int    `form:"twitch_chat_message_max_length"`
-	GroqMaxContextInput        int    `form:"groq_max_context_input"`
+	GroqMaxContextInput        int    `form:"groq_max_context_input" binding:"omitempty,min=5"`
 }
 
 func GetTwitchUserInfo(c *gin.Context) {
