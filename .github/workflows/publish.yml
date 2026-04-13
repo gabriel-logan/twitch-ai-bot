@@ -37,18 +37,15 @@ jobs:
 
       - name: Zip artifacts
         run: |
-          VERSION=${GITHUB_REF_NAME}
-
           cd bin
-
           for dir in linux windows darwin; do
-            zip -r ${dir}-${VERSION}.zip ${dir}
+            zip -r ${dir}.zip ${dir}
           done
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            bin/linux-*.zip
-            bin/windows-*.zip
-            bin/darwin-*.zip
+            bin/linux.zip
+            bin/windows.zip
+            bin/darwin.zip
