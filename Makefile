@@ -1,37 +1,43 @@
-.PHONY: run build_linux build_windows build_darwin build clean test test_race
+.PHONY: run build build_linux build_windows build_darwin clean test test_race
 
+VERSION ?= dev
 API_DIST=cmd/api
-BINARY_NAME=twitch_ai_bot
+APP_NAME=twitch_ai_bot
+
+BUILD_DIR=bin
+OUTPUT_DIR=$(APP_NAME)-$(VERSION)
+
+TEMPLATES=templates
+PUBLIC=public
+SYSTEM_PROMPT=system_prompt.txt
+SETUP_FILE=setup-$(VERSION).txt
 
 run:
 	go run $(API_DIST)/main.go
 
+build: clean build_linux build_windows build_darwin
+
 build_linux:
-	GOOS=linux GOARCH=amd64 go build -o bin/linux/$(BINARY_NAME) $(API_DIST)/main.go
-	cp .env bin/linux/.env
-	cp -r templates bin/linux
-	cp system_prompt.txt bin/linux/system_prompt.txt
-	cp -r public bin/linux
-	cp setup.txt bin/linux/setup.txt
+	$(call build_binary,linux,amd64,)
 
 build_windows:
-	GOOS=windows GOARCH=amd64 go build -o bin/windows/$(BINARY_NAME).exe $(API_DIST)/main.go
-	cp .env bin/windows/.env
-	cp -r templates bin/windows
-	cp system_prompt.txt bin/windows/system_prompt.txt
-	cp -r public bin/windows
-	cp setup.txt bin/windows/setup.txt
+	$(call build_binary,windows,amd64,.exe)
 
 build_darwin:
-	GOOS=darwin GOARCH=amd64 go build -o bin/darwin/$(BINARY_NAME) $(API_DIST)/main.go
-	cp .env bin/darwin/.env
-	cp -r templates bin/darwin
-	cp system_prompt.txt bin/darwin/system_prompt.txt
-	cp -r public bin/darwin
-	cp setup.txt bin/darwin/setup.txt
+	$(call build_binary,darwin,amd64,)
 
-build: build_linux build_windows build_darwin
-	
+define build_binary
+	mkdir -p $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)
+
+	GOOS=$(1) GOARCH=$(2) go build -o $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/$(APP_NAME)$(3) $(API_DIST)/main.go
+
+	cp .env $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/.env
+	cp -r $(TEMPLATES) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/
+	cp $(SYSTEM_PROMPT) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/
+	cp -r $(PUBLIC) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/
+	cp $(SETUP_FILE) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/
+endef
+
 clean:
 	rm -rf bin
 
