@@ -36,14 +36,11 @@ define build_binary
 	mkdir -p $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)
 
 	GOOS=$(1) GOARCH=$(2) go build -o $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/$(APP_NAME)-$(VERSION)-$(2)$(3) $(API_DIST)/main.go
-
+	
 	cp .env $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/
 	cp -r $(TEMPLATES) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/
-	cp $(SYSTEM_PROMPT) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/${SYSTEM_PROMPT}
-
-	cp $(SETUP_FILE) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/${SETUP_FILE}
-	mv $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/${SETUP_FILE} $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/setup-$(VERSION).txt
-
+	cp $(SYSTEM_PROMPT) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/
+	cp $(SETUP_FILE) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/setup-$(VERSION).txt
 	cp -r $(PUBLIC) $(BUILD_DIR)/$(1)/$(OUTPUT_DIR)/
 endef
 
