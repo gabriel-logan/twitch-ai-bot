@@ -100,13 +100,49 @@ func consumeEnvPtr(env *config.Env) {
 
 func BenchmarkSetupEnvValue(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		_ = setupEnvValue()
+		env := setupEnvValue()
+
+		sinkString = env.GinMode
+		sinkString = env.AppName
+		sinkString = env.ServerPort
+		sinkSliceLen = len(env.ServerTrustedProxies)
+		sinkString = env.TwitchClientID
+		sinkString = env.TwitchClientSecret
+		sinkString = env.TwitchClientRedirectURI
+		sinkString = env.TwitchBroadcasterID
+		sinkString = env.TwitchBotUserID
+		sinkString = env.TwitchBotUserName
+		sinkString = env.TwitchKeyWordToCallBot
+		sinkInt = env.TwitchChatMessageMaxLength
+		sinkDuration = env.TwitchTimeforTheBottoTellaJoke
+		sinkString = env.GroqAPIKey
+		sinkSliceLen = len(env.GroqModels)
+		sinkInt = env.GroqMaxContextInput
+		sinkDuration = env.ContextRequestDuration
 	}
 }
 
 func BenchmarkSetupEnvPtr(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		_ = setupEnvPtr()
+		env := setupEnvPtr()
+
+		sinkString = env.GinMode
+		sinkString = env.AppName
+		sinkString = env.ServerPort
+		sinkSliceLen = len(env.ServerTrustedProxies)
+		sinkString = env.TwitchClientID
+		sinkString = env.TwitchClientSecret
+		sinkString = env.TwitchClientRedirectURI
+		sinkString = env.TwitchBroadcasterID
+		sinkString = env.TwitchBotUserID
+		sinkString = env.TwitchBotUserName
+		sinkString = env.TwitchKeyWordToCallBot
+		sinkInt = env.TwitchChatMessageMaxLength
+		sinkDuration = env.TwitchTimeforTheBottoTellaJoke
+		sinkString = env.GroqAPIKey
+		sinkSliceLen = len(env.GroqModels)
+		sinkInt = env.GroqMaxContextInput
+		sinkDuration = env.ContextRequestDuration
 	}
 }
 
