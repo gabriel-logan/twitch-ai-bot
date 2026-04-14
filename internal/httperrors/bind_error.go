@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -17,6 +18,11 @@ func BadRequestFromBindError(err error) any {
 	var typeErr *json.UnmarshalTypeError
 	if errors.As(err, &typeErr) {
 		return "Invalid type for field '" + typeErr.Field + "': expected " + typeErr.Type.String()
+	}
+
+	var numErr *strconv.NumError
+	if errors.As(err, &numErr) {
+		return fmt.Sprintf("Invalid value '%s' for field: must be a number", numErr.Num)
 	}
 
 	var validationErrors validator.ValidationErrors
