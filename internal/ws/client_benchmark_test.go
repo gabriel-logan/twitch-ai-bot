@@ -99,6 +99,8 @@ func consumeEnvPtr(env *config.Env) {
 }
 
 func BenchmarkSetupEnvValue(b *testing.B) {
+	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
 		env := setupEnvValue()
 
@@ -123,6 +125,8 @@ func BenchmarkSetupEnvValue(b *testing.B) {
 }
 
 func BenchmarkSetupEnvPtr(b *testing.B) {
+	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
 		env := setupEnvPtr()
 
