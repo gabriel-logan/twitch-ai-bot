@@ -33,7 +33,7 @@ cd twitch-ai-bot
 2. **Install dependencies**:
 
 ```bash
-go mod download
+go mod download && go mod tidy
 ```
 
 3. **Configure environment variables**:
