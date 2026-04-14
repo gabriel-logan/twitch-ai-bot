@@ -151,8 +151,9 @@ func BenchmarkSetupEnvPtr(b *testing.B) {
 }
 
 func BenchmarkPassEnvValue(b *testing.B) {
-	env := setupEnvValue()
 	b.ResetTimer()
+
+	env := setupEnvValue()
 
 	for i := 0; i < b.N; i++ {
 		consumeEnvValue(env)
@@ -160,8 +161,9 @@ func BenchmarkPassEnvValue(b *testing.B) {
 }
 
 func BenchmarkPassEnvPtr(b *testing.B) {
-	env := setupEnvPtr()
 	b.ResetTimer()
+
+	env := setupEnvPtr()
 
 	for i := 0; i < b.N; i++ {
 		consumeEnvPtr(env)
@@ -169,8 +171,9 @@ func BenchmarkPassEnvPtr(b *testing.B) {
 }
 
 func BenchmarkPassEnvValueThroughLayers(b *testing.B) {
-	env := setupEnvValue()
 	b.ResetTimer()
+
+	env := setupEnvValue()
 
 	for i := 0; i < b.N; i++ {
 		func(env config.Env) {
@@ -186,8 +189,9 @@ func BenchmarkPassEnvValueThroughLayers(b *testing.B) {
 }
 
 func BenchmarkPassEnvPtrThroughLayers(b *testing.B) {
-	env := setupEnvPtr()
 	b.ResetTimer()
+
+	env := setupEnvPtr()
 
 	for i := 0; i < b.N; i++ {
 		func(env *config.Env) {
@@ -203,8 +207,9 @@ func BenchmarkPassEnvPtrThroughLayers(b *testing.B) {
 }
 
 func BenchmarkAccessAllFieldsValue(b *testing.B) {
-	env := setupEnvValue()
 	b.ResetTimer()
+
+	env := setupEnvValue()
 
 	for i := 0; i < b.N; i++ {
 		sinkString = env.GinMode
@@ -228,8 +233,9 @@ func BenchmarkAccessAllFieldsValue(b *testing.B) {
 }
 
 func BenchmarkAccessAllFieldsPtr(b *testing.B) {
-	env := setupEnvPtr()
 	b.ResetTimer()
+
+	env := setupEnvPtr()
 
 	for i := 0; i < b.N; i++ {
 		sinkString = env.GinMode
