@@ -1,6 +1,7 @@
 # Benchmark Analysis: `config.Env` by Value vs Pointer
 
 ## Test Environment
+
 * **CPU**: AMD EPYC 7763 64-Core Processor
 * **Architecture**: amd64
 * **OS**: Linux
@@ -51,71 +52,76 @@ Measures access to every field inside the struct to evaluate read performance af
 
 ## Run 1
 
-| Benchmark | Iterations | ns/op | B/op | allocs/op |
-|---|---:|---:|---:|---:|
-| BenchmarkSetupEnvValue-4 | 14829405 | 84.58 | 48 | 2 |
-| BenchmarkSetupEnvPtr-4 | 16707600 | 71.51 | 48 | 2 |
-| BenchmarkPassEnvValue-4 | 79060825 | 14.49 | 0 | 0 |
-| BenchmarkPassEnvPtr-4 | 161969701 | 7.613 | 0 | 0 |
-| BenchmarkAccessAllFieldsValue-4 | 160521747 | 7.693 | 0 | 0 |
-| BenchmarkAccessAllFieldsPtr-4 | 164919740 | 7.302 | 0 | 0 |
-
+| Benchmark                            | Iterations | ns/op | B/op | allocs/op |
+| ------------------------------------ | ---------: | ----: | ---: | --------: |
+| BenchmarkSetupEnvValue-4             |   17141466 | 73.15 |   48 |         2 |
+| BenchmarkSetupEnvPtr-4               |   17716290 | 69.36 |   48 |         2 |
+| BenchmarkPassEnvValue-4              |   74660100 | 14.63 |    0 |         0 |
+| BenchmarkPassEnvPtr-4                |  162771505 | 7.409 |    0 |         0 |
+| BenchmarkPassEnvValueThroughLayers-4 |   82359506 | 14.65 |    0 |         0 |
+| BenchmarkPassEnvPtrThroughLayers-4   |  164469148 | 7.473 |    0 |         0 |
+| BenchmarkAccessAllFieldsValue-4      |  163398565 | 8.173 |    0 |         0 |
+| BenchmarkAccessAllFieldsPtr-4        |  165766435 | 7.299 |    0 |         0 |
 
 ---
 
 ## Run 2
 
-| Benchmark | Iterations | ns/op | B/op | allocs/op |
-|---|---:|---:|---:|---:|
-| BenchmarkSetupEnvValue-4 | 15675697 | 76.27 | 48 | 2 |
-| BenchmarkSetupEnvPtr-4 | 16842288 | 72.63 | 48 | 2 |
-| BenchmarkPassEnvValue-4 | 76673356 | 14.77 | 0 | 0 |
-| BenchmarkPassEnvPtr-4 | 158406127 | 7.437 | 0 | 0 |
-| BenchmarkAccessAllFieldsValue-4 | 158531172 | 7.543 | 0 | 0 |
-| BenchmarkAccessAllFieldsPtr-4 | 148907617 | 7.431 | 0 | 0 |
-
+| Benchmark                            | Iterations | ns/op | B/op | allocs/op |
+| ------------------------------------ | ---------: | ----: | ---: | --------: |
+| BenchmarkSetupEnvValue-4             |   17593842 | 70.61 |   48 |         2 |
+| BenchmarkSetupEnvPtr-4               |   18061474 | 66.67 |   48 |         2 |
+| BenchmarkPassEnvValue-4              |   80613002 | 15.16 |    0 |         0 |
+| BenchmarkPassEnvPtr-4                |  159829962 | 7.619 |    0 |         0 |
+| BenchmarkPassEnvValueThroughLayers-4 |   80489865 | 14.48 |    0 |         0 |
+| BenchmarkPassEnvPtrThroughLayers-4   |  161692410 | 7.399 |    0 |         0 |
+| BenchmarkAccessAllFieldsValue-4      |  155821522 | 7.236 |    0 |         0 |
+| BenchmarkAccessAllFieldsPtr-4        |  160664203 | 7.199 |    0 |         0 |
 
 ---
 
 ## Run 3
 
-| Benchmark | Iterations | ns/op | B/op | allocs/op |
-|---|---:|---:|---:|---:|
-| BenchmarkSetupEnvValue-4 | 15772764 | 74.68 | 48 | 2 |
-| BenchmarkSetupEnvPtr-4 | 17564322 | 74.14 | 48 | 2 |
-| BenchmarkPassEnvValue-4 | 80332974 | 14.66 | 0 | 0 |
-| BenchmarkPassEnvPtr-4 | 161178534 | 7.590 | 0 | 0 |
-| BenchmarkAccessAllFieldsValue-4 | 158545330 | 7.718 | 0 | 0 |
-| BenchmarkAccessAllFieldsPtr-4 | 163030546 | 7.334 | 0 | 0 |
-
+| Benchmark                            | Iterations | ns/op | B/op | allocs/op |
+| ------------------------------------ | ---------: | ----: | ---: | --------: |
+| BenchmarkSetupEnvValue-4             |   17468119 | 71.19 |   48 |         2 |
+| BenchmarkSetupEnvPtr-4               |   17620556 | 67.64 |   48 |         2 |
+| BenchmarkPassEnvValue-4              |   81921260 | 14.60 |    0 |         0 |
+| BenchmarkPassEnvPtr-4                |  154580797 | 7.517 |    0 |         0 |
+| BenchmarkPassEnvValueThroughLayers-4 |   80708550 | 14.63 |    0 |         0 |
+| BenchmarkPassEnvPtrThroughLayers-4   |  167237961 | 7.471 |    0 |         0 |
+| BenchmarkAccessAllFieldsValue-4      |  160907088 | 7.804 |    0 |         0 |
+| BenchmarkAccessAllFieldsPtr-4        |  166759869 | 7.270 |    0 |         0 |
 
 ---
 
 ## Run 4
 
-| Benchmark | Iterations | ns/op | B/op | allocs/op |
-|---|---:|---:|---:|---:|
-| BenchmarkSetupEnvValue-4 | 16500852 | 74.34 | 48 | 2 |
-| BenchmarkSetupEnvPtr-4 | 16681446 | 70.09 | 48 | 2 |
-| BenchmarkPassEnvValue-4 | 75061386 | 14.63 | 0 | 0 |
-| BenchmarkPassEnvPtr-4 | 144275503 | 7.263 | 0 | 0 |
-| BenchmarkAccessAllFieldsValue-4 | 148677422 | 7.715 | 0 | 0 |
-| BenchmarkAccessAllFieldsPtr-4 | 158886720 | 7.476 | 0 | 0 |
-
+| Benchmark                            | Iterations | ns/op | B/op | allocs/op |
+| ------------------------------------ | ---------: | ----: | ---: | --------: |
+| BenchmarkSetupEnvValue-4             |   15704492 | 70.70 |   48 |         2 |
+| BenchmarkSetupEnvPtr-4               |   17542892 | 72.52 |   48 |         2 |
+| BenchmarkPassEnvValue-4              |   79590464 | 14.72 |    0 |         0 |
+| BenchmarkPassEnvPtr-4                |  162657099 | 7.258 |    0 |         0 |
+| BenchmarkPassEnvValueThroughLayers-4 |   81081048 | 14.76 |    0 |         0 |
+| BenchmarkPassEnvPtrThroughLayers-4   |  162833307 | 7.579 |    0 |         0 |
+| BenchmarkAccessAllFieldsValue-4      |  167034045 | 7.389 |    0 |         0 |
+| BenchmarkAccessAllFieldsPtr-4        |  161059974 | 7.651 |    0 |         0 |
 
 ---
 
 ## Run 5
 
-| Benchmark | Iterations | ns/op | B/op | allocs/op |
-|---|---:|---:|---:|---:|
-| BenchmarkSetupEnvValue-4 | 16892463 | 74.73 | 48 | 2 |
-| BenchmarkSetupEnvPtr-4 | 15951242 | 69.77 | 48 | 2 |
-| BenchmarkPassEnvValue-4 | 78677354 | 14.69 | 0 | 0 |
-| BenchmarkPassEnvPtr-4 | 156451375 | 7.451 | 0 | 0 |
-| BenchmarkAccessAllFieldsValue-4 | 152838811 | 8.094 | 0 | 0 |
-| BenchmarkAccessAllFieldsPtr-4 | 161217052 | 7.909 | 0 | 0 |
-
+| Benchmark                            | Iterations | ns/op | B/op | allocs/op |
+| ------------------------------------ | ---------: | ----: | ---: | --------: |
+| BenchmarkSetupEnvValue-4             |   17319056 | 70.86 |   48 |         2 |
+| BenchmarkSetupEnvPtr-4               |   17820525 | 67.28 |   48 |         2 |
+| BenchmarkPassEnvValue-4              |   78237195 | 14.67 |    0 |         0 |
+| BenchmarkPassEnvPtr-4                |  167981884 | 7.468 |    0 |         0 |
+| BenchmarkPassEnvValueThroughLayers-4 |   82642328 | 14.59 |    0 |         0 |
+| BenchmarkPassEnvPtrThroughLayers-4   |  158058201 | 7.644 |    0 |         0 |
+| BenchmarkAccessAllFieldsValue-4      |  166051496 | 7.477 |    0 |         0 |
+| BenchmarkAccessAllFieldsPtr-4        |  164819450 | 7.538 |    0 |         0 |
 
 ---
 
@@ -123,21 +129,25 @@ Measures access to every field inside the struct to evaluate read performance af
 
 ## Average of All Runs
 
-| Benchmark | Mean ns/op | B/op | allocs/op |
-|---|---:|---:|---:|
-| BenchmarkSetupEnvValue | 76.92 | 48 | 2 |
-| BenchmarkSetupEnvPtr | 71.63 | 48 | 2 |
-| BenchmarkPassEnvValue | 14.65 | 0 | 0 |
-| BenchmarkPassEnvPtr | 7.471 | 0 | 0 |
-| BenchmarkAccessAllFieldsValue | 7.753 | 0 | 0 |
-| BenchmarkAccessAllFieldsPtr | 7.490 | 0 | 0 |
+| Benchmark                          | Mean ns/op | B/op | allocs/op |
+| ---------------------------------- | ---------: | ---: | --------: |
+| BenchmarkSetupEnvValue             |      71.30 |   48 |         2 |
+| BenchmarkSetupEnvPtr               |      68.69 |   48 |         2 |
+| BenchmarkPassEnvValue              |      14.76 |    0 |         0 |
+| BenchmarkPassEnvPtr                |      7.454 |    0 |         0 |
+| BenchmarkPassEnvValueThroughLayers |      14.62 |    0 |         0 |
+| BenchmarkPassEnvPtrThroughLayers   |      7.513 |    0 |         0 |
+| BenchmarkAccessAllFieldsValue      |      7.616 |    0 |         0 |
+| BenchmarkAccessAllFieldsPtr        |      7.391 |    0 |         0 |
 
-
+---
 
 ### Mean Performance Difference
-* **Environment creation**: pointer is about **6.88% faster** on average.
-* **Passing to functions**: pointer is about **49.00% faster** on average.
-* **Accessing all fields**: pointer is about **3.38% faster** on average.
+
+* **Environment creation**: pointer is about **3.66% faster** on average.
+* **Passing to functions**: pointer is about **49.49% faster** on average.
+* **Passing through layers**: pointer is about **48.62% faster** on average.
+* **Accessing all fields**: pointer is about **2.95% faster** on average.
 
 ---
 
@@ -147,8 +157,8 @@ Measures access to every field inside the struct to evaluate read performance af
 
 Both approaches remain very close in memory behavior:
 
-* value: **76.92 ns/op** average
-* pointer: **71.63 ns/op** average
+* value: **71.30 ns/op** average
+* pointer: **68.69 ns/op** average
 * both allocate **48 B/op**
 * both perform **2 allocs/op**
 
@@ -162,17 +172,17 @@ This remains the most relevant difference.
 
 ### Value
 
-| Metric | Result |
-|---|---|
-| Average | 14.65 ns/op |
-| Range | 14.49 ns/op to 14.77 ns/op |
+| Metric  | Result                     |
+| ------- | -------------------------- |
+| Average | 14.76 ns/op                |
+| Range   | 14.60 ns/op to 15.16 ns/op |
 
 ### Pointer
 
-| Metric | Result |
-|---|---|
-| Average | 7.471 ns/op |
-| Range | 7.263 ns/op to 7.613 ns/op |
+| Metric  | Result                     |
+| ------- | -------------------------- |
+| Average | 7.454 ns/op                |
+| Range   | 7.258 ns/op to 7.619 ns/op |
 
 Pointer passing is clearly better here because:
 
@@ -188,17 +198,17 @@ Field access is very close between both approaches on this stronger machine.
 
 ### Value
 
-| Metric | Result |
-|---|---|
-| Average | 7.753 ns/op |
-| Range | 7.543 ns/op to 8.094 ns/op |
+| Metric  | Result                     |
+| ------- | -------------------------- |
+| Average | 7.616 ns/op                |
+| Range   | 7.236 ns/op to 8.173 ns/op |
 
 ### Pointer
 
-| Metric | Result |
-|---|---|
-| Average | 7.490 ns/op |
-| Range | 7.302 ns/op to 7.909 ns/op |
+| Metric  | Result                     |
+| ------- | -------------------------- |
+| Average | 7.391 ns/op                |
+| Range   | 7.199 ns/op to 7.651 ns/op |
 
 Here the difference is small, with pointer still slightly ahead on average.
 
@@ -224,11 +234,13 @@ because:
 # Recommended Rule
 
 ## Use value when:
+
 * the struct is very small
 * an immutable copy is desired
 * the struct is not passed around frequently
 
 ## Use pointer when:
+
 * the struct has many fields
 * shared configuration is used
 * the object is passed frequently
