@@ -50,76 +50,88 @@ Measures access to every field inside the struct to evaluate read performance af
 # Benchmark Results
 
 ## Run 1
-```bash
-BenchmarkSetupEnvValue-4                14829405                84.58 ns/op           48 B/op          2 allocs/op
-BenchmarkSetupEnvPtr-4                  16707600                71.51 ns/op           48 B/op          2 allocs/op
-BenchmarkPassEnvValue-4                 79060825                14.49 ns/op            0 B/op          0 allocs/op
-BenchmarkPassEnvPtr-4                   161969701                7.613 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsValue-4         160521747                7.693 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsPtr-4           164919740                7.302 ns/op           0 B/op          0 allocs/op
-```
+
+| Benchmark | Iterations | ns/op | B/op | allocs/op |
+|---|---:|---:|---:|---:|
+| BenchmarkSetupEnvValue-4 | 14829405 | 84.58 | 48 | 2 |
+| BenchmarkSetupEnvPtr-4 | 16707600 | 71.51 | 48 | 2 |
+| BenchmarkPassEnvValue-4 | 79060825 | 14.49 | 0 | 0 |
+| BenchmarkPassEnvPtr-4 | 161969701 | 7.613 | 0 | 0 |
+| BenchmarkAccessAllFieldsValue-4 | 160521747 | 7.693 | 0 | 0 |
+| BenchmarkAccessAllFieldsPtr-4 | 164919740 | 7.302 | 0 | 0 |
+
 
 ---
 
 ## Run 2
-```bash
-BenchmarkSetupEnvValue-4                15675697                76.27 ns/op           48 B/op          2 allocs/op
-BenchmarkSetupEnvPtr-4                  16842288                72.63 ns/op           48 B/op          2 allocs/op
-BenchmarkPassEnvValue-4                 76673356                14.77 ns/op            0 B/op          0 allocs/op
-BenchmarkPassEnvPtr-4                   158406127                7.437 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsValue-4         158531172                7.543 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsPtr-4           148907617                7.431 ns/op           0 B/op          0 allocs/op
-```
+
+| Benchmark | Iterations | ns/op | B/op | allocs/op |
+|---|---:|---:|---:|---:|
+| BenchmarkSetupEnvValue-4 | 15675697 | 76.27 | 48 | 2 |
+| BenchmarkSetupEnvPtr-4 | 16842288 | 72.63 | 48 | 2 |
+| BenchmarkPassEnvValue-4 | 76673356 | 14.77 | 0 | 0 |
+| BenchmarkPassEnvPtr-4 | 158406127 | 7.437 | 0 | 0 |
+| BenchmarkAccessAllFieldsValue-4 | 158531172 | 7.543 | 0 | 0 |
+| BenchmarkAccessAllFieldsPtr-4 | 148907617 | 7.431 | 0 | 0 |
+
 
 ---
 
 ## Run 3
-```bash
-BenchmarkSetupEnvValue-4                15772764                74.68 ns/op           48 B/op          2 allocs/op
-BenchmarkSetupEnvPtr-4                  17564322                74.14 ns/op           48 B/op          2 allocs/op
-BenchmarkPassEnvValue-4                 80332974                14.66 ns/op            0 B/op          0 allocs/op
-BenchmarkPassEnvPtr-4                   161178534                7.590 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsValue-4         158545330                7.718 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsPtr-4           163030546                7.334 ns/op           0 B/op          0 allocs/op
-```
+
+| Benchmark | Iterations | ns/op | B/op | allocs/op |
+|---|---:|---:|---:|---:|
+| BenchmarkSetupEnvValue-4 | 15772764 | 74.68 | 48 | 2 |
+| BenchmarkSetupEnvPtr-4 | 17564322 | 74.14 | 48 | 2 |
+| BenchmarkPassEnvValue-4 | 80332974 | 14.66 | 0 | 0 |
+| BenchmarkPassEnvPtr-4 | 161178534 | 7.590 | 0 | 0 |
+| BenchmarkAccessAllFieldsValue-4 | 158545330 | 7.718 | 0 | 0 |
+| BenchmarkAccessAllFieldsPtr-4 | 163030546 | 7.334 | 0 | 0 |
+
 
 ---
 
 ## Run 4
-```bash
-BenchmarkSetupEnvValue-4                16500852                74.34 ns/op           48 B/op          2 allocs/op
-BenchmarkSetupEnvPtr-4                  16681446                70.09 ns/op           48 B/op          2 allocs/op
-BenchmarkPassEnvValue-4                 75061386                14.63 ns/op            0 B/op          0 allocs/op
-BenchmarkPassEnvPtr-4                   144275503                7.263 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsValue-4         148677422                7.715 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsPtr-4           158886720                7.476 ns/op           0 B/op          0 allocs/op
-```
+
+| Benchmark | Iterations | ns/op | B/op | allocs/op |
+|---|---:|---:|---:|---:|
+| BenchmarkSetupEnvValue-4 | 16500852 | 74.34 | 48 | 2 |
+| BenchmarkSetupEnvPtr-4 | 16681446 | 70.09 | 48 | 2 |
+| BenchmarkPassEnvValue-4 | 75061386 | 14.63 | 0 | 0 |
+| BenchmarkPassEnvPtr-4 | 144275503 | 7.263 | 0 | 0 |
+| BenchmarkAccessAllFieldsValue-4 | 148677422 | 7.715 | 0 | 0 |
+| BenchmarkAccessAllFieldsPtr-4 | 158886720 | 7.476 | 0 | 0 |
+
 
 ---
 
 ## Run 5
-```bash
-BenchmarkSetupEnvValue-4                16892463                74.73 ns/op           48 B/op          2 allocs/op
-BenchmarkSetupEnvPtr-4                  15951242                69.77 ns/op           48 B/op          2 allocs/op
-BenchmarkPassEnvValue-4                 78677354                14.69 ns/op            0 B/op          0 allocs/op
-BenchmarkPassEnvPtr-4                   156451375                7.451 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsValue-4         152838811                8.094 ns/op           0 B/op          0 allocs/op
-BenchmarkAccessAllFieldsPtr-4           161217052                7.909 ns/op           0 B/op          0 allocs/op
-```
+
+| Benchmark | Iterations | ns/op | B/op | allocs/op |
+|---|---:|---:|---:|---:|
+| BenchmarkSetupEnvValue-4 | 16892463 | 74.73 | 48 | 2 |
+| BenchmarkSetupEnvPtr-4 | 15951242 | 69.77 | 48 | 2 |
+| BenchmarkPassEnvValue-4 | 78677354 | 14.69 | 0 | 0 |
+| BenchmarkPassEnvPtr-4 | 156451375 | 7.451 | 0 | 0 |
+| BenchmarkAccessAllFieldsValue-4 | 152838811 | 8.094 | 0 | 0 |
+| BenchmarkAccessAllFieldsPtr-4 | 161217052 | 7.909 | 0 | 0 |
+
 
 ---
 
 # General Result
 
 ## Average of All Runs
-```text
-BenchmarkSetupEnvValue     mean: 76.92 ns/op   48 B/op   2 allocs/op
-BenchmarkSetupEnvPtr       mean: 71.63 ns/op   48 B/op   2 allocs/op
-BenchmarkPassEnvValue      mean: 14.65 ns/op   0 B/op    0 allocs/op
-BenchmarkPassEnvPtr        mean: 7.471 ns/op  0 B/op    0 allocs/op
-BenchmarkAccessAllFieldsValue mean: 7.753 ns/op  0 B/op    0 allocs/op
-BenchmarkAccessAllFieldsPtr   mean: 7.490 ns/op  0 B/op    0 allocs/op
-```
+
+| Benchmark | Mean ns/op | B/op | allocs/op |
+|---|---:|---:|---:|
+| BenchmarkSetupEnvValue | 76.92 | 48 | 2 |
+| BenchmarkSetupEnvPtr | 71.63 | 48 | 2 |
+| BenchmarkPassEnvValue | 14.65 | 0 | 0 |
+| BenchmarkPassEnvPtr | 7.471 | 0 | 0 |
+| BenchmarkAccessAllFieldsValue | 7.753 | 0 | 0 |
+| BenchmarkAccessAllFieldsPtr | 7.490 | 0 | 0 |
+
 
 
 ### Mean Performance Difference
@@ -149,16 +161,18 @@ Pointer creation is slightly faster on this machine, but the difference is still
 This remains the most relevant difference.
 
 ### Value
-```text
-average: 14.65 ns/op
-range: 14.49 ns/op to 14.77 ns/op
-```
+
+| Metric | Result |
+|---|---|
+| Average | 14.65 ns/op |
+| Range | 14.49 ns/op to 14.77 ns/op |
 
 ### Pointer
-```text
-average: 7.471 ns/op
-range: 7.263 ns/op to 7.613 ns/op
-```
+
+| Metric | Result |
+|---|---|
+| Average | 7.471 ns/op |
+| Range | 7.263 ns/op to 7.613 ns/op |
 
 Pointer passing is clearly better here because:
 
@@ -173,16 +187,18 @@ Pointer passing is clearly better here because:
 Field access is very close between both approaches on this stronger machine.
 
 ### Value
-```text
-average: 7.753 ns/op
-range: 7.543 ns/op to 8.094 ns/op
-```
+
+| Metric | Result |
+|---|---|
+| Average | 7.753 ns/op |
+| Range | 7.543 ns/op to 8.094 ns/op |
 
 ### Pointer
-```text
-average: 7.490 ns/op
-range: 7.302 ns/op to 7.909 ns/op
-```
+
+| Metric | Result |
+|---|---|
+| Average | 7.490 ns/op |
+| Range | 7.302 ns/op to 7.909 ns/op |
 
 Here the difference is small, with pointer still slightly ahead on average.
 
