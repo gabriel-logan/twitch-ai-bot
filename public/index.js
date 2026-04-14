@@ -48,7 +48,17 @@ async function setEnvironment() {
         }, 600);
     } catch (err) {
         console.error(err);
-        statusEl.textContent = "Failed to update environment";
+
+        if (typeof err === "string") {
+            statusEl.textContent = err;
+        } else if (Array.isArray(err)) {
+            statusEl.textContent = err.join(", ");
+        } else if (err instanceof Error) {
+            statusEl.textContent = err.message;
+        } else {
+            statusEl.textContent = "Failed to update environment";
+        }
+
         statusEl.className = "result mt-4 error";
     }
 }
