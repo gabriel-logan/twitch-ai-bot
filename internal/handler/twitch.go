@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gabriel-logan/twitch-ai-bot/internal/config"
+	"github.com/gabriel-logan/twitch-ai-bot/internal/httperrors"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/storage"
 	"github.com/gabriel-logan/twitch-ai-bot/internal/ws"
 	"github.com/gin-gonic/gin"
@@ -104,7 +105,7 @@ func SetEnvironment(c *gin.Context) {
 	var newEnv EnvironmentInput
 	if err := c.ShouldBindQuery(&newEnv); err != nil {
 		log.Printf("Error when trying to bind query: %v \n", err)
-		c.JSON(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, httperrors.BadRequestFromBindError(err))
 		return
 	}
 
