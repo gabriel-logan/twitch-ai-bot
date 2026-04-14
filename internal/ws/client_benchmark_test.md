@@ -1,10 +1,10 @@
 # Benchmark Analysis: `config.Env` by Value vs Pointer
 
 ## Test Environment
-
-* **CPU**: Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz
-* **RAM**: 12 GB DDR4 @ 1400 MHz
+* **CPU**: AMD EPYC 7763 64-Core Processor
+* **Architecture**: amd64
 * **OS**: Linux
+* **Go test target**: `./internal/ws/`
 
 ---
 
@@ -50,67 +50,82 @@ Measures access to every field inside the struct to evaluate read performance af
 # Benchmark Results
 
 ## Run 1
-
 ```bash
-BenchmarkSetupEnvValue-8          	14388418	        82.72 ns/op	      48 B/op	       2 allocs/op
-BenchmarkSetupEnvPtr-8            	14722521	        77.50 ns/op	      48 B/op	       2 allocs/op
-BenchmarkPassEnvValue-8           	70258984	        15.55 ns/op	       0 B/op	       0 allocs/op
-BenchmarkPassEnvPtr-8             	121914757	        9.983 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsValue-8   	127733354	        9.552 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsPtr-8     	121534356	        9.271 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSetupEnvValue-4                14829405                84.58 ns/op           48 B/op          2 allocs/op
+BenchmarkSetupEnvPtr-4                  16707600                71.51 ns/op           48 B/op          2 allocs/op
+BenchmarkPassEnvValue-4                 79060825                14.49 ns/op            0 B/op          0 allocs/op
+BenchmarkPassEnvPtr-4                   161969701                7.613 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsValue-4         160521747                7.693 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsPtr-4           164919740                7.302 ns/op           0 B/op          0 allocs/op
 ```
 
 ---
 
 ## Run 2
-
 ```bash
-BenchmarkSetupEnvValue-8          	13033200	        83.89 ns/op	      48 B/op	       2 allocs/op
-BenchmarkSetupEnvPtr-8            	11982387	        86.05 ns/op	      48 B/op	       2 allocs/op
-BenchmarkPassEnvValue-8           	69109017	        15.62 ns/op	       0 B/op	       0 allocs/op
-BenchmarkPassEnvPtr-8             	132078182	        15.91 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsValue-8   	62719278	        18.92 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsPtr-8     	122925182	        8.700 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSetupEnvValue-4                15675697                76.27 ns/op           48 B/op          2 allocs/op
+BenchmarkSetupEnvPtr-4                  16842288                72.63 ns/op           48 B/op          2 allocs/op
+BenchmarkPassEnvValue-4                 76673356                14.77 ns/op            0 B/op          0 allocs/op
+BenchmarkPassEnvPtr-4                   158406127                7.437 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsValue-4         158531172                7.543 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsPtr-4           148907617                7.431 ns/op           0 B/op          0 allocs/op
 ```
 
 ---
 
 ## Run 3
-
 ```bash
-BenchmarkSetupEnvValue-8          	12201316	        87.27 ns/op	      48 B/op	       2 allocs/op
-BenchmarkSetupEnvPtr-8            	13877317	        78.86 ns/op	      48 B/op	       2 allocs/op
-BenchmarkPassEnvValue-8           	81014121	        15.77 ns/op	       0 B/op	       0 allocs/op
-BenchmarkPassEnvPtr-8             	123778851	        9.019 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsValue-8   	127421020	        9.456 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsPtr-8     	95513210	        18.56 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSetupEnvValue-4                15772764                74.68 ns/op           48 B/op          2 allocs/op
+BenchmarkSetupEnvPtr-4                  17564322                74.14 ns/op           48 B/op          2 allocs/op
+BenchmarkPassEnvValue-4                 80332974                14.66 ns/op            0 B/op          0 allocs/op
+BenchmarkPassEnvPtr-4                   161178534                7.590 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsValue-4         158545330                7.718 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsPtr-4           163030546                7.334 ns/op           0 B/op          0 allocs/op
 ```
 
 ---
 
 ## Run 4
-
 ```bash
-BenchmarkSetupEnvValue-8          	12525980	        84.20 ns/op	      48 B/op	       2 allocs/op
-BenchmarkSetupEnvPtr-8            	12757929	        78.66 ns/op	      48 B/op	       2 allocs/op
-BenchmarkPassEnvValue-8           	81415234	        14.56 ns/op	       0 B/op	       0 allocs/op
-BenchmarkPassEnvPtr-8             	134989942	        9.252 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsValue-8   	129291007	        9.308 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsPtr-8     	132179647	        8.979 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSetupEnvValue-4                16500852                74.34 ns/op           48 B/op          2 allocs/op
+BenchmarkSetupEnvPtr-4                  16681446                70.09 ns/op           48 B/op          2 allocs/op
+BenchmarkPassEnvValue-4                 75061386                14.63 ns/op            0 B/op          0 allocs/op
+BenchmarkPassEnvPtr-4                   144275503                7.263 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsValue-4         148677422                7.715 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsPtr-4           158886720                7.476 ns/op           0 B/op          0 allocs/op
 ```
 
 ---
 
 ## Run 5
-
 ```bash
-BenchmarkSetupEnvValue-8          	12188198	        83.61 ns/op	      48 B/op	       2 allocs/op
-BenchmarkSetupEnvPtr-8            	12357740	        82.49 ns/op	      48 B/op	       2 allocs/op
-BenchmarkPassEnvValue-8           	72068565	        15.38 ns/op	       0 B/op	       0 allocs/op
-BenchmarkPassEnvPtr-8             	129901725	        9.123 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsValue-8   	128307884	        15.57 ns/op	       0 B/op	       0 allocs/op
-BenchmarkAccessAllFieldsPtr-8     	139923158	        8.803 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSetupEnvValue-4                16892463                74.73 ns/op           48 B/op          2 allocs/op
+BenchmarkSetupEnvPtr-4                  15951242                69.77 ns/op           48 B/op          2 allocs/op
+BenchmarkPassEnvValue-4                 78677354                14.69 ns/op            0 B/op          0 allocs/op
+BenchmarkPassEnvPtr-4                   156451375                7.451 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsValue-4         152838811                8.094 ns/op           0 B/op          0 allocs/op
+BenchmarkAccessAllFieldsPtr-4           161217052                7.909 ns/op           0 B/op          0 allocs/op
 ```
+
+---
+
+# General Result
+
+## Average of All Runs
+```text
+BenchmarkSetupEnvValue     mean: 76.92 ns/op   48 B/op   2 allocs/op
+BenchmarkSetupEnvPtr       mean: 71.63 ns/op   48 B/op   2 allocs/op
+BenchmarkPassEnvValue      mean: 14.65 ns/op   0 B/op    0 allocs/op
+BenchmarkPassEnvPtr        mean: 7.471 ns/op  0 B/op    0 allocs/op
+BenchmarkAccessAllFieldsValue mean: 7.753 ns/op  0 B/op    0 allocs/op
+BenchmarkAccessAllFieldsPtr   mean: 7.490 ns/op  0 B/op    0 allocs/op
+```
+
+
+### Mean Performance Difference
+* **Environment creation**: pointer is about **6.88% faster** on average.
+* **Passing to functions**: pointer is about **49.00% faster** on average.
+* **Accessing all fields**: pointer is about **3.38% faster** on average.
 
 ---
 
@@ -118,53 +133,64 @@ BenchmarkAccessAllFieldsPtr-8     	139923158	        8.803 ns/op	       0 B/op	 
 
 ## Environment Creation
 
-Both approaches show nearly identical performance:
+Both approaches remain very close in memory behavior:
 
-* ~77-87 ns/op
-* 48 B/op
-* 2 allocs/op
+* value: **76.92 ns/op** average
+* pointer: **71.63 ns/op** average
+* both allocate **48 B/op**
+* both perform **2 allocs/op**
 
-The difference is negligible - either approach is fine for object creation.
+Pointer creation is slightly faster on this machine, but the difference is still small in absolute terms.
 
 ---
 
 ## Passing the Struct to Functions
 
-This is where the difference becomes significant.
+This remains the most relevant difference.
 
 ### Value
-
 ```text
-~14.5 ns/op to ~15.8 ns/op
+average: 14.65 ns/op
+range: 14.49 ns/op to 14.77 ns/op
 ```
 
 ### Pointer
-
 ```text
-~9.0 ns/op to ~15.9 ns/op
+average: 7.471 ns/op
+range: 7.263 ns/op to 7.613 ns/op
 ```
 
-Pointer passing is generally faster because:
+Pointer passing is clearly better here because:
 
-* value copies the entire struct (~84 bytes)
-* pointer copies only an address (8 bytes)
+* value copies the entire struct
+* pointer copies only an address
+* the results were stable across all 5 runs
 
 ---
 
 ## Accessing Fields
 
-The results are mixed - both approaches show variable performance:
+Field access is very close between both approaches on this stronger machine.
 
-* value: ~9.3 ns/op to ~18.9 ns/op
-* pointer: ~8.7 ns/op to ~18.6 ns/op
+### Value
+```text
+average: 7.753 ns/op
+range: 7.543 ns/op to 8.094 ns/op
+```
 
-Neither is consistently better - the CPU cache and branch predictor heavily influence these results.
+### Pointer
+```text
+average: 7.490 ns/op
+range: 7.302 ns/op to 7.909 ns/op
+```
+
+Here the difference is small, with pointer still slightly ahead on average.
 
 ---
 
 # Practical Conclusion
 
-For this project, using a pointer is the best choice:
+For this project, using a pointer is still the best choice:
 
 ```go
 func run(ctx context.Context, env *config.Env)
@@ -172,24 +198,25 @@ func run(ctx context.Context, env *config.Env)
 
 because:
 
-* `config.Env` is already a medium-sized struct
+* `config.Env` is a medium-sized struct
 * it is passed across multiple functions
-* copying becomes unnecessary overhead
+* pointer passing avoids unnecessary copies
+* the new benchmark results are more stable and consistently favor pointer usage
 
 ---
 
 # Recommended Rule
 
 ## Use value when:
-
-* struct is very small
-* immutable copy is desired
+* the struct is very small
+* an immutable copy is desired
+* the struct is not passed around frequently
 
 ## Use pointer when:
-
-* struct has many fields
+* the struct has many fields
 * shared configuration is used
-* object is passed frequently
+* the object is passed frequently
+* you want to avoid repeated copying costs
 
 ---
 
