@@ -213,3 +213,37 @@ func BenchmarkAccessAllFieldsPtr(b *testing.B) {
 		sinkDuration = env.ContextRequestDuration
 	}
 }
+
+func BenchmarkPassEnvValueThroughLayers(b *testing.B) {
+	env := setupEnvValue()
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		func(env config.Env) {
+			func(env config.Env) {
+				func(env config.Env) {
+					func(env config.Env) {
+						consumeEnvValue(env)
+					}(env)
+				}(env)
+			}(env)
+		}(env)
+	}
+}
+
+func BenchmarkPassEnvPtrThroughLayers(b *testing.B) {
+	env := setupEnvPtr()
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		func(env *config.Env) {
+			func(env *config.Env) {
+				func(env *config.Env) {
+					func(env *config.Env) {
+						consumeEnvPtr(env)
+					}(env)
+				}(env)
+			}(env)
+		}(env)
+	}
+}
