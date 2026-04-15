@@ -12,7 +12,7 @@ type Request struct {
 }
 
 type ResponseChoiceMessage struct {
-	Role    string  `json:"role"`
+	Role    string `json:"role"`
 	Content string `json:"content"` // Optional - Groq returns string or null
 }
 
